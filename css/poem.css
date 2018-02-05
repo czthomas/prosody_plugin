@@ -41,6 +41,12 @@ span.prosody-checkfeet {
 span.caesura:hover {
   background: transparent;
 }
+span.prosody-correct {
+  color: #20ff40;
+}
+span.prosody-incorrect {
+  color: #ff2020;
+}
 .caesura {
   color: #a5a;
   font-weight: bold;

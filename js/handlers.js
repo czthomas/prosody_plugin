@@ -117,6 +117,9 @@ function switchstress(shadowSyllable) {
     }
 
     $('#checkstress' + shadowLineNumber + ' img').attr('src', siteUrl + '/wp-content/plugins/prosody_plugin/images/stress-default.png');
+
+    $(shadowSyllable).removeClass('prosody-correct')
+        .removeClass('prosody-incorrect');
 }
 
 function checkstress(lineNumber) {
@@ -165,6 +168,8 @@ function checkstress(lineNumber) {
         stressCorrect = false;
     }
 
+    showCorrection(lineNumber, scheme, realAnswer);
+
     setLineFeatureState(lineNumber, feature, stressCorrect);
     showSyncopation();
 
@@ -182,6 +187,20 @@ function showNote(lineNumber) {
             $('#hintfor' + lineNumber).hide();
             togglenote(lineNumber);
         });
+    }
+}
+
+function showCorrection(lineNumber, answer, correct) {
+    var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
+
+    for(var idx = 0; idx < answer.length; idx++) {
+        if(answer.charAt(idx) == correct.charAt(idx)) {
+            $(shadowLine[idx]).addClass('prosody-correct')
+                .removeClass('prosody-incorrect');
+        } else {
+            $(shadowLine[idx]).addClass('prosody-incorrect')
+                .removeClass('prosody-correct');
+        }
     }
 }
 
