@@ -217,6 +217,12 @@ function showSyncopation() {
 }
 
 function switchfoot(syllableId) {
+    if($('#' + syllableId).attr("single-foot") != undefined) {
+        var prefix = syllableId.match(/^([^-]+-){5}/)[0];
+        if(syllableId != $('[id^=' + prefix + ']').last()[0].id) {
+            return;
+        }
+    }
 
     var syllableSpan = $('#' + syllableId + ' span');
     if (syllableSpan.length === 0) {
