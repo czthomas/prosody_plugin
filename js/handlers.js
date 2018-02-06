@@ -91,14 +91,6 @@ function switchstress(shadowSyllable) {
         $('#' + shadowSyllable.id).empty();
         $('#' + shadowSyllable.id).append(marker(realSyllable));
         realSyllable.attr('data-stress', '+');
-    } else if (stress === "+") {
-        $('#' + shadowSyllable.id).fadeOut();
-        setTimeout(function() {
-            $('#' + shadowSyllable.id).empty();
-            $('#' + shadowSyllable.id).append(slackmarker(realSyllable));
-            realSyllable.attr('data-stress', '\u222a');
-        }, 150);
-        $('#' + shadowSyllable.id).fadeIn();
     } else {
         $('#' + shadowSyllable.id).fadeOut();
         setTimeout(function() {
@@ -130,7 +122,7 @@ function checkstress(lineNumber) {
     $('#prosody-real-' + lineNumber + ' span[real]').each(
         function() {
             var syllableStress = this.dataset.stress;
-            scheme += syllableStress;
+            scheme += syllableStress ? syllableStress : '-';
         }
     );
 
@@ -145,13 +137,13 @@ function checkstress(lineNumber) {
     }
 
     var answer = $('#prosody-real-' + lineNumber).data('real').split('|');
-    var realAnswer = answer[0].replace(/-/g, '\u222a');
+    var realAnswer = answer[0];
     // Remove the parentheses that some poems have for optional stress marks
     realAnswer = realAnswer.replace(/\(|\)/g, '');
     var expectedAnswer;
     // if answer[1] exists, and answer[1] does not equal answer[0]
     if (answer[1] && answer[1] !== answer[0]) {
-        expectedAnswer = answer[1].replace(/-/g, '\u222a');
+        expectedAnswer = answer[1];
     }
 
 
