@@ -155,6 +155,7 @@
 <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
  -->
                          <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
+                         <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
 
                     <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
                     segment ends with a space -->
@@ -177,6 +178,11 @@
                                     <xsl:if test="$discrepant-flag">
                                         <xsl:attribute name="discrepant"/>
                                     </xsl:if>
+
+                                    <xsl:if test="$single-foot">
+                                        <xsl:attribute name="single-foot"/>
+                                    </xsl:if>
+
                                     <xsl:copy-of select="text()"/>
                                     <!-- add space back -->
 
