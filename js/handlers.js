@@ -212,10 +212,10 @@ function correctFeet(lineNumber, response, correct) {
     for(var footIdx = 0; footIdx < feet.length; footIdx++) {
         var target = feet[footIdx];
         for(; realIdx < reals.length; realIdx++) {
-            var normalized = reals[realIdx].innerText.replace(/\|/, '');
-            var searchIdx = target.search(normalized);
+            var raw = reals[realIdx].dataset['raw'].replace(/[^\w|]/g, '');
+            var searchIdx = target.search(raw);
             
-            target = target.substr(searchIdx + normalized.length);
+            target = target.substr(searchIdx + raw.length);
 
             if(/\|/.test(reals[realIdx].innerText)) {
                 var markers = $(reals[realIdx]).children('.prosody-footmarker');
@@ -225,7 +225,7 @@ function correctFeet(lineNumber, response, correct) {
                 } else {
                     markers.addClass('prosody-incorrect');
                 }
-            }
+            } 
             if(searchIdx == -1) break;
         }
     }
@@ -287,10 +287,10 @@ function checkfeet(lineNumber) {
     }
 
     // remove everything but words, numbers and pipe
-    var answerNrml = answer.replace(/[^\w|]/g, '');
-    var schemeNrml = scheme.replace(/[^\w|]/g, '');
+    var answer = answer.replace(/[^\w|]/g, '');
+    var scheme = scheme.replace(/[^\w|]/g, '');
 
-    if (schemeNrml === answerNrml) {
+    if (scheme === answer) {
         $("#checkfeet" + lineNumber + " img").attr("src", correctAnswerUrl);
         feetCorrect = true;
         $("#prosody-real-" + lineNumber + " .prosody-footmarker").addClass('prosody-correct');

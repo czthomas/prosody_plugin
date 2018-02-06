@@ -174,7 +174,8 @@
                             <xsl:if test="string(.)">
                                 <span class="prosody-syllable" real=""
                                     id="prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}"
-                                    onclick="switchfoot('prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}');">
+                                    onclick="switchfoot('prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}');"
+                                    data-raw="{string(.)}">
                                     <xsl:if test="$discrepant-flag">
                                         <xsl:attribute name="discrepant"/>
                                     </xsl:if>
