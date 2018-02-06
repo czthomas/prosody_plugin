@@ -168,7 +168,7 @@ function checkstress(lineNumber) {
         stressCorrect = false;
     }
 
-    showCorrection(lineNumber, scheme, realAnswer);
+    correctStress(lineNumber, scheme, realAnswer);
 
     setLineFeatureState(lineNumber, feature, stressCorrect);
     showSyncopation();
@@ -190,16 +190,43 @@ function showNote(lineNumber) {
     }
 }
 
-function showCorrection(lineNumber, answer, correct) {
+function correctStress(lineNumber, response, correct) {
     var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
 
-    for(var idx = 0; idx < answer.length; idx++) {
-        if(answer.charAt(idx) == correct.charAt(idx)) {
+    for(var idx = 0; idx < response.length; idx++) {
+        if(response.charAt(idx) == correct.charAt(idx)) {
             $(shadowLine[idx]).addClass('prosody-correct')
                 .removeClass('prosody-incorrect');
         } else {
             $(shadowLine[idx]).addClass('prosody-incorrect')
                 .removeClass('prosody-correct');
+        }
+    }
+}
+
+function correctFeet(lineNumber, response, correct) {
+    var reals = $('#prosody-real-' + lineNumber + ' > .prosody-syllable');
+    var feet = correct.split('|');
+
+    var realIdx = 0;
+    for(var footIdx = 0; footIdx < feet.length; footIdx++) {
+        var target = feet[footIdx];
+        for(; realIdx < reals.length; realIdx++) {
+            var normalized = reals[realIdx].innerText.replace(/\|/, '');
+            var searchIdx = target.search(normalized);
+            
+            target = target.substr(searchIdx + normalized.length);
+
+            if(/\|/.test(reals[realIdx].innerText)) {
+                var markers = $(reals[realIdx]).children('.prosody-footmarker');
+
+                if(target.length == 0) {
+                    markers.addClass('prosody-correct');
+                } else {
+                    markers.addClass('prosody-incorrect');
+                }
+            }
+            if(searchIdx == -1) break;
         }
     }
 }
@@ -260,15 +287,17 @@ function checkfeet(lineNumber) {
     }
 
     // remove everything but words, numbers and pipe
-    answer = answer.replace(/[^\w|]/g, '');
-    scheme = scheme.replace(/[^\w|]/g, '');
+    var answerNrml = answer.replace(/[^\w|]/g, '');
+    var schemeNrml = scheme.replace(/[^\w|]/g, '');
 
-    if (scheme === answer) {
+    if (schemeNrml === answerNrml) {
         $("#checkfeet" + lineNumber + " img").attr("src", correctAnswerUrl);
         feetCorrect = true;
+        $("#prosody-real-" + lineNumber + " .prosody-footmarker").addClass('prosody-correct');
     } else {
         $("#checkfeet" + lineNumber + " img").attr("src", incorrectAnswerUrl);
         feetCorrect = false;
+        correctFeet(lineNumber, scheme, answer);
     }
     setLineFeatureState(lineNumber, feature, feetCorrect);
 
