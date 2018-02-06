@@ -217,7 +217,7 @@ function correctFeet(lineNumber, response, correct) {
             var searchIdx = target.search(raw);
             
             target = target.substr(searchIdx + raw.length);
-            
+
             if(/\|/.test(reals[realIdx].innerText)) {
                 var markers = $(reals[realIdx]).children('.prosody-footmarker');
 
@@ -229,8 +229,8 @@ function correctFeet(lineNumber, response, correct) {
             }
             
             if(searchIdx == -1) break;
-            else if(target.length == 0) {
-                $(reals[realIdx]).append('<span class="prosody-footmarker">|</span>');
+            else if(target.length == 0 && $(reals[realIdx]).children().length == 0) {
+                switchfoot(reals[realIdx].id);
             }
         }
     }
