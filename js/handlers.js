@@ -186,12 +186,18 @@ function correctStress(lineNumber, response, correct) {
     var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
 
     for(var idx = 0; idx < response.length; idx++) {
-        if(response.charAt(idx) == correct.charAt(idx)) {
-            $(shadowLine[idx]).addClass('prosody-correct')
-                .removeClass('prosody-incorrect');
+        if(response.charAt(idx) != '-') {
+            if(response.charAt(idx) == correct.charAt(idx)) {
+                $(shadowLine[idx]).addClass('prosody-correct')
+                    .removeClass('prosody-incorrect');
+            } else {
+                $(shadowLine[idx]).addClass('prosody-incorrect')
+                    .removeClass('prosody-correct');
+            }
         } else {
-            $(shadowLine[idx]).addClass('prosody-incorrect')
-                .removeClass('prosody-correct');
+            if(correct.charAt(idx) == '+') {
+                switchstress(shadowLine[idx]);
+            }
         }
     }
 }
