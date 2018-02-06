@@ -208,6 +208,7 @@ function correctFeet(lineNumber, response, correct) {
     var reals = $('#prosody-real-' + lineNumber + ' > .prosody-syllable');
     var feet = correct.split('|');
 
+    // walk syllables down foot-graph to locate and correct footmarkers
     var realIdx = 0;
     for(var footIdx = 0; footIdx < feet.length; footIdx++) {
         var target = feet[footIdx];
@@ -216,7 +217,7 @@ function correctFeet(lineNumber, response, correct) {
             var searchIdx = target.search(raw);
             
             target = target.substr(searchIdx + raw.length);
-
+            
             if(/\|/.test(reals[realIdx].innerText)) {
                 var markers = $(reals[realIdx]).children('.prosody-footmarker');
 
@@ -225,8 +226,12 @@ function correctFeet(lineNumber, response, correct) {
                 } else {
                     markers.addClass('prosody-incorrect');
                 }
-            } 
+            }
+            
             if(searchIdx == -1) break;
+            else if(target.length == 0) {
+                $(reals[realIdx]).append('<span class="prosody-footmarker">|</span>');
+            }
         }
     }
 }
