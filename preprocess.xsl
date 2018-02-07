@@ -70,8 +70,9 @@
 		</xsl:template>
 
     <xsl:template match="TEI:lg">
+        
         <xsl:apply-templates select="TEI:space" />
-        <xsl:for-each select="TEI:l">
+        <xsl:for-each select="TEI:l|TEI:lb|TEI:emph">
             <xsl:apply-templates select=".">
                 <xsl:with-param name="linegroupindex" select="position()"/>
             </xsl:apply-templates>
@@ -81,7 +82,15 @@
         </xsl:if>
     </xsl:template>
 
+    <xsl:template match="TEI:lb">
+        <br/>
+    </xsl:template>
 
+    <xsl:template match="TEI:emph">
+        <i>
+            <xsl:copy-of select="./node()" />
+        </i>
+    </xsl:template>
 
     <xsl:template match="TEI:l">
         <xsl:param name="linegroupindex"/>
@@ -95,6 +104,10 @@
                 <xsl:for-each select="TEI:seg">
 
                     <xsl:variable name="seg-position" select="position()"/>
+
+                    <xsl:for-each select="TEI:emph">
+                        <xsl:apply-templates select="." />
+                    </xsl:for-each>
 
                     <xsl:for-each select="text()|*/text()|TEI:caesura">
                     	<xsl:if test="name(.)='caesura'">
@@ -249,7 +262,15 @@
                     </button>
                 </span>
             </div>
-
         </div>
+
+
+        <xsl:variable name="lb-count" select="count(.//TEI:lb)" />
+        
+        <!--<xsl:if "$lb-count > 0">
+            <xsl:call-template name="linebreaks">
+                <xsl:with-param name="limit" select="$lb-count" />
+            </xsl:call-template>
+        </xsl:if>-->
     </xsl:template>
 </xsl:stylesheet>
