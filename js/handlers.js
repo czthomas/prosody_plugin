@@ -211,7 +211,7 @@ function correctFeet(lineNumber, response, correct) {
     for(var footIdx = 0; footIdx < feet.length; footIdx++) {
         var target = feet[footIdx];
         for(; realIdx < reals.length; realIdx++) {
-            var raw = reals[realIdx].dataset['raw'].replace(/[^\w|]/g, '');
+            var raw = normalizeText(reals[realIdx].dataset['raw']);
             var searchIdx = target.search(raw);
             
             target = target.substr(searchIdx + raw.length);
@@ -280,6 +280,13 @@ function switchfoot(syllableId) {
     }, 100);
 }
 
+// strips whitespace and punctuation (except for pipe), relatively unicode safe
+function normalizeText(input) {
+    return input.replace(
+        /[-\s!"#$%&'()*+,-./:;<=>?@[\]^_`{}~\u2000-\u206f\u2e00-\u2e7f]/gu,
+        '');
+}
+
 function checkfeet(lineNumber) {
     var feature = 'feet';
     var feetCorrect = getLineFeatureState(lineNumber, feature);
@@ -289,9 +296,8 @@ function checkfeet(lineNumber) {
         scheme = scheme.slice(0, -1);
     }
 
-    // remove everything but words, numbers and pipe
-    var answer = answer.replace(/[^\w|]/g, '');
-    var scheme = scheme.replace(/[^\w|]/g, '');
+    var answer = normalizeText(answer);
+    var scheme = normalizeText(scheme);
 
     if (scheme === answer) {
         $("#checkfeet" + lineNumber + " img").attr("src", correctAnswerUrl);
