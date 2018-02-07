@@ -126,7 +126,7 @@
                                     <span class="prosody-placeholder">
                                         <xsl:apply-templates/>
                                         <!-- <xsl:copy-of select="string(.)"/> -->
-				<xsl:if test="not(position()=last())">
+				                        <xsl:if test="not(position()=last())">
 	                                        <xsl:text> </xsl:text>
 	                                    </xsl:if>
                                     </span>
@@ -145,89 +145,89 @@
 
             <div class="TEI-l" id="prosody-real-{$line-number}">
 <!--                 <xsl:if test="exists(TEI:space)"> -->
-                    <xsl:apply-templates select="TEI:space" />
+            <xsl:apply-templates select="TEI:space" />
 <!--                 </xsl:if> -->
 
-                <xsl:for-each select="@*">
-                  <xsl:attribute name="data-{name()}"><xsl:value-of select="."/></xsl:attribute>
-                </xsl:for-each>
-                <xsl:attribute name="data-feet">
-                  <xsl:for-each select="TEI:seg">
+            <xsl:for-each select="@*">
+                <xsl:attribute name="data-{name()}"><xsl:value-of select="."/></xsl:attribute>
+            </xsl:for-each>
+            <xsl:attribute name="data-feet">
+                <xsl:for-each select="TEI:seg">
                     <xsl:if test="position()>1">|</xsl:if>
                     <xsl:value-of select="."/>
-                  </xsl:for-each>
-                </xsl:attribute>
+                </xsl:for-each>
+            </xsl:attribute>
 
-                <span style="display:none;" linegroupindex="{$linegroupindex}" answer="{../@met}"
-                    >Meter</span>
+            <span style="display:none;" linegroupindex="{$linegroupindex}" answer="{../@met}"
+                >Meter</span>
 
 
-                <xsl:for-each select="TEI:seg">
-                    <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
-                        highlighted -->
+            <xsl:for-each select="TEI:seg">
+                <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
+                    highlighted -->
 <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
- -->
-                         <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
-                         <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
+-->
+                <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
+                <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
 
-                    <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
-                    segment ends with a space -->
+                <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
+                segment ends with a space -->
 
-                    <xsl:variable name="seg-position" select="position()"/>
-			<xsl:for-each select="text()|*/text()|TEI:caesura">
-			<xsl:if test="name(.)='caesura'">
-				<span class="caesura" style="display:none">//</span>
-			</xsl:if>
-                        <xsl:variable name="foot-position" select="position()"/>
-                        <xsl:variable name="foot-last" select="last()"/>
-                        <xsl:variable name="node-string" select="."/>
-                        <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
-                        <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
-                        <xsl:for-each select="str:tokenize(.,' ')">
-                            <xsl:if test="string(.)">
-                                <span class="prosody-syllable" real=""
-                                    id="prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}"
-                                    onclick="switchfoot('prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}');"
-                                    data-raw="{string(.)}">
-                                    <xsl:if test="$discrepant-flag">
-                                        <xsl:attribute name="discrepant"/>
-                                    </xsl:if>
-
-                                    <xsl:if test="$single-foot">
-                                        <xsl:attribute name="single-foot"/>
-                                    </xsl:if>
-
-                                    <xsl:copy-of select="text()"/>
-                                    <!-- add space back -->
-
-                                    <xsl:choose>
-                                      <xsl:when test="not(position()=last()) and $last-char=' '">
-                                        <xsl:text> </xsl:text>
-                                      </xsl:when>
-                                      <xsl:when test="not(position()=last())">
-                                        <xsl:text> </xsl:text>
-                                      </xsl:when>
-                                      <xsl:when test="$last-char=' '">
-                                        <xsl:text> </xsl:text>
-                                      </xsl:when>
-                                    </xsl:choose>
-
-                                    <xsl:if test="not(position()=last())">
-                                        <!-- <xsl:text>A</xsl:text> -->
-                                    </xsl:if>
-                                    <!-- <span class="prosody-footmarker">|</span> -->
-                                    <xsl:if test="$last-char=' '">
-                                        <!-- <xsl:text>F</xsl:text> -->
-                                    </xsl:if>
-                                </span>
-                            </xsl:if>
-                        </xsl:for-each>
-
-                    </xsl:for-each>
-                    <xsl:if test="(name(following-sibling::*[1]) = 'caesura')">
+                <xsl:variable name="seg-position" select="position()"/>
+                <xsl:for-each select="text()|*/text()|TEI:caesura">
+                    <xsl:if test="name(.)='caesura'">
                         <span class="caesura" style="display:none">//</span>
                     </xsl:if>
+                    <xsl:variable name="foot-position" select="position()"/>
+                    <xsl:variable name="foot-last" select="last()"/>
+                    <xsl:variable name="node-string" select="."/>
+                    <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
+                    <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
+                    <xsl:for-each select="str:tokenize(.,' ')">
+                        <xsl:if test="string(.)">
+                            <span class="prosody-syllable" real=""
+                                id="prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}"
+                                onclick="switchfoot('prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}');"
+                                data-raw="{string(.)}">
+                                <xsl:if test="$discrepant-flag">
+                                    <xsl:attribute name="discrepant"/>
+                                </xsl:if>
+
+                                <xsl:if test="$single-foot">
+                                    <xsl:attribute name="single-foot"/>
+                                </xsl:if>
+
+                                <xsl:copy-of select="text()"/>
+                                <!-- add space back -->
+
+                                <xsl:choose>
+                                    <xsl:when test="not(position()=last()) and $last-char=' '">
+                                    <xsl:text> </xsl:text>
+                                    </xsl:when>
+                                    <xsl:when test="not(position()=last())">
+                                    <xsl:text> </xsl:text>
+                                    </xsl:when>
+                                    <xsl:when test="$last-char=' '">
+                                    <xsl:text> </xsl:text>
+                                    </xsl:when>
+                                </xsl:choose>
+
+                                <xsl:if test="not(position()=last())">
+                                    <!-- <xsl:text>A</xsl:text> -->
+                                </xsl:if>
+                                <!-- <span class="prosody-footmarker">|</span> -->
+                                <xsl:if test="$last-char=' '">
+                                    <!-- <xsl:text>F</xsl:text> -->
+                                </xsl:if>
+                            </span>
+                        </xsl:if>
+                    </xsl:for-each>
+
                 </xsl:for-each>
+                <xsl:if test="(name(following-sibling::*[1]) = 'caesura')">
+                    <span class="caesura" style="display:none">//</span>
+                </xsl:if>
+            </xsl:for-each>
 
             </div>
             <div class="buttons">
