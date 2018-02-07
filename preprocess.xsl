@@ -263,14 +263,5 @@
                 </span>
             </div>
         </div>
-
-
-        <xsl:variable name="lb-count" select="count(.//TEI:lb)" />
-        
-        <!--<xsl:if "$lb-count > 0">
-            <xsl:call-template name="linebreaks">
-                <xsl:with-param name="limit" select="$lb-count" />
-            </xsl:call-template>
-        </xsl:if>-->
     </xsl:template>
 </xsl:stylesheet>
