@@ -119,19 +119,9 @@
                         <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
                         <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
                         <xsl:for-each select="str:tokenize($node-string,' ')">
-                            <xsl:if test="string(.)">
-                                <span class="prosody-shadowsyllable" shadow=""
-                                    id="prosody-shadow-{$line-number}-{$seg-position}-{$foot-position}-{position()}"
-                                    onclick="switchstress(this);">
-                                    <span class="prosody-placeholder">
-                                        <xsl:apply-templates/>
-                                        <!-- <xsl:copy-of select="string(.)"/> -->
-				                        <xsl:if test="not(position()=last())">
-	                                        <xsl:text> </xsl:text>
-	                                    </xsl:if>
-                                    </span>
-                                </span>
-                            </xsl:if>
+                            <xsl:call-template name="shadow-segment">
+                                <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+                            </xsl:call-template>
                         </xsl:for-each>
                         <xsl:if test="$last-char=' '">
                             <xsl:text> </xsl:text>
@@ -163,10 +153,10 @@
 
 
             <xsl:for-each select="TEI:seg">
-                <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
+                                    <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
                     highlighted -->
-<!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
--->
+            <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
+            -->
                 <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
                 <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
 
@@ -183,46 +173,14 @@
                     <xsl:variable name="node-string" select="."/>
                     <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
                     <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
+                    
                     <xsl:for-each select="str:tokenize(.,' ')">
-                        <xsl:if test="string(.)">
-                            <span class="prosody-syllable" real=""
-                                id="prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}"
-                                onclick="switchfoot('prosody-real-{$line-number}-{$seg-position}-{$foot-position}-{position()}');"
-                                data-raw="{string(.)}">
-                                <xsl:if test="$discrepant-flag">
-                                    <xsl:attribute name="discrepant"/>
-                                </xsl:if>
-
-                                <xsl:if test="$single-foot">
-                                    <xsl:attribute name="single-foot"/>
-                                </xsl:if>
-
-                                <xsl:copy-of select="text()"/>
-                                <!-- add space back -->
-
-                                <xsl:choose>
-                                    <xsl:when test="not(position()=last()) and $last-char=' '">
-                                    <xsl:text> </xsl:text>
-                                    </xsl:when>
-                                    <xsl:when test="not(position()=last())">
-                                    <xsl:text> </xsl:text>
-                                    </xsl:when>
-                                    <xsl:when test="$last-char=' '">
-                                    <xsl:text> </xsl:text>
-                                    </xsl:when>
-                                </xsl:choose>
-
-                                <xsl:if test="not(position()=last())">
-                                    <!-- <xsl:text>A</xsl:text> -->
-                                </xsl:if>
-                                <!-- <span class="prosody-footmarker">|</span> -->
-                                <xsl:if test="$last-char=' '">
-                                    <!-- <xsl:text>F</xsl:text> -->
-                                </xsl:if>
-                            </span>
-                        </xsl:if>
+                        <xsl:call-template name="real-segment">
+                            <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+                            <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                            <xsl:with-param name="last-char" select="$last-char" />
+                        </xsl:call-template>
                     </xsl:for-each>
-
                 </xsl:for-each>
                 <xsl:if test="(name(following-sibling::*[1]) = 'caesura')">
                     <span class="caesura" style="display:none">//</span>
@@ -263,5 +221,55 @@
                 </span>
             </div>
         </div>
+    </xsl:template>
+
+    <xsl:template name="shadow-segment">
+        <xsl:param name="seg-id" />
+
+        <xsl:if test="string(.)">
+            <span class="prosody-shadowsyllable" shadow=""
+                id="prosody-shadow-{$seg-id}-{position()}"
+                onclick="switchstress(this);">
+                <span class="prosody-placeholder">
+                    <xsl:apply-templates/>
+                    <!-- <xsl:copy-of select="string(.)"/> -->
+                    <xsl:if test="not(position()=last())">
+                        <xsl:text> </xsl:text>
+                    </xsl:if>
+                </span>
+            </span>
+        </xsl:if>
+    </xsl:template>
+
+    <xsl:template name="real-segment">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <xsl:if test="string(.)">
+            <span class="prosody-syllable" real=""
+                id="prosody-real-{$seg-id}-{position()}"
+                onclick="switchfoot('prosody-real-{$seg-id}-{position()}');"
+                data-raw="{string(.)}">
+                <xsl:if test="$discrepant-flag">
+                    <xsl:attribute name="discrepant"/>
+                </xsl:if>
+
+                <xsl:copy-of select="text()"/>
+                <!-- add space back -->
+
+                <xsl:choose>
+                    <xsl:when test="not(position()=last()) and $last-char=' '">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                    <xsl:when test="not(position()=last())">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                    <xsl:when test="$last-char=' '">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                </xsl:choose>
+            </span>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>
