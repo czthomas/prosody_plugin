@@ -283,7 +283,8 @@ function switchfoot(syllableId) {
 // strips whitespace and punctuation (except for pipe), relatively unicode safe
 function normalizeText(input) {
     return input.replace(
-        /[-\s!"#$%&'()*+,-./:;<=>?@[\]^_`{}~\u2000-\u206f\u2e00-\u2e7f]/gu,
+        // latin block punctuation, unicode general and supplemental punctuation blocks
+        /[-\s!"#$%&'()*+,./:;<=>?@[\]^_`{}~\u00a1-\u00bf\u2000-\u206f\u2e00-\u2e7f]/gu,
         '');
 }
 
