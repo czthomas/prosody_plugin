@@ -72,7 +72,7 @@
     <xsl:template match="TEI:lg">
         
         <xsl:apply-templates select="TEI:space" />
-        <xsl:for-each select="TEI:l|TEI:lb|TEI:emph">
+        <xsl:for-each select="TEI:l|TEI:lb">
             <xsl:apply-templates select=".">
                 <xsl:with-param name="linegroupindex" select="position()"/>
             </xsl:apply-templates>
@@ -84,12 +84,6 @@
 
     <xsl:template match="TEI:lb">
         <br/>
-    </xsl:template>
-
-    <xsl:template match="TEI:emph">
-        <i>
-            <xsl:copy-of select="./node()" />
-        </i>
     </xsl:template>
 
     <xsl:template match="TEI:l">
@@ -105,10 +99,6 @@
 
                     <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
                     <xsl:variable name="seg-position" select="position()"/>
-
-                    <xsl:for-each select="TEI:emph">
-                        <xsl:apply-templates select="." />
-                    </xsl:for-each>
 
                     <xsl:for-each select="TEI:single|text()|TEI:caesura">
                     	<xsl:if test="name(.)='caesura'">
