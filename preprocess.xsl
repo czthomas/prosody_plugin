@@ -192,6 +192,7 @@
                                 <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
                                 <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                 <xsl:with-param name="last-char" select="$last-char" />
+                                <xsl:with-param name="single-foot" select="$single-foot" />
                                 <xsl:with-param name="content" select="." />
                             </xsl:call-template>
                         </xsl:when>
@@ -269,6 +270,7 @@
     <xsl:template name="real-segment">
         <xsl:param name="seg-id" />
         <xsl:param name="discrepant-flag" />
+        <xsl:param name="single-foot" />
         <xsl:param name="last-char" />
         <xsl:param name="content" />
 
@@ -284,17 +286,19 @@
                 <xsl:copy-of select="$content"/>
                 <!-- add space back -->
 
-                <xsl:choose>
-                    <xsl:when test="not(position()=last()) and $last-char=' '">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                    <xsl:when test="not(position()=last())">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                    <xsl:when test="$last-char=' '">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                </xsl:choose>
+                <xsl:if test="not($single-foot)">
+                    <xsl:choose>
+                        <xsl:when test="not(position()=last()) and $last-char=' '">
+                        <xsl:text> </xsl:text>
+                        </xsl:when>
+                        <xsl:when test="not(position()=last())">
+                        <xsl:text> </xsl:text>
+                        </xsl:when>
+                        <xsl:when test="$last-char=' '">
+                        <xsl:text> </xsl:text>
+                        </xsl:when>
+                    </xsl:choose>
+                </xsl:if>
             </span>
         </xsl:if>
     </xsl:template>
