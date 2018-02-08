@@ -110,7 +110,7 @@
                         <xsl:apply-templates select="." />
                     </xsl:for-each>
 
-                    <xsl:for-each select="text()|*/text()|TEI:caesura">
+                    <xsl:for-each select="TEI:single|text()|TEI:caesura">
                     	<xsl:if test="name(.)='caesura'">
                         	<span class="caesura" style="display:none">//</span>
                         </xsl:if>
@@ -121,7 +121,7 @@
                         <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
 
                         <xsl:choose>
-                            <xsl:when test="$single-foot">
+                            <xsl:when test="name() = 'single'">
                                 <xsl:call-template name="shadow-segment">
                                     <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
                                 </xsl:call-template>
@@ -170,13 +170,12 @@
             <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
             -->
                 <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
-                <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
 
                 <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
                 segment ends with a space -->
 
                 <xsl:variable name="seg-position" select="position()"/>
-                <xsl:for-each select="text()|*/text()|TEI:caesura">
+                <xsl:for-each select="TEI:single|text()|TEI:caesura">
                     <xsl:if test="name(.)='caesura'">
                         <span class="caesura" style="display:none">//</span>
                     </xsl:if>
@@ -187,13 +186,11 @@
                     <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
 
                     <xsl:choose>
-                        <xsl:when test="$single-foot">
+                        <xsl:when test="name() = 'single'">
                             <xsl:call-template name="real-segment">
                                 <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
                                 <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                 <xsl:with-param name="last-char" select="$last-char" />
-                                <xsl:with-param name="single-foot" select="$single-foot" />
-                                <xsl:with-param name="content" select="." />
                             </xsl:call-template>
                         </xsl:when>
                         <xsl:otherwise>
@@ -202,7 +199,6 @@
                                     <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
                                     <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                     <xsl:with-param name="last-char" select="$last-char" />
-                                    <xsl:with-param name="content" select="text()" />
                                 </xsl:call-template>
                             </xsl:for-each>
                         </xsl:otherwise>
@@ -272,7 +268,6 @@
         <xsl:param name="discrepant-flag" />
         <xsl:param name="single-foot" />
         <xsl:param name="last-char" />
-        <xsl:param name="content" />
 
         <xsl:if test="string(.)">
             <span class="prosody-syllable" real=""
@@ -283,7 +278,7 @@
                     <xsl:attribute name="discrepant"/>
                 </xsl:if>
 
-                <xsl:copy-of select="$content"/>
+                <xsl:copy-of select="text()"/>
                 <!-- add space back -->
 
                 <xsl:if test="not($single-foot)">
