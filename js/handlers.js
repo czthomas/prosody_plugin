@@ -66,7 +66,8 @@ function checkmeter(lineNumber, lineGroupIndex) {
         var numberScheme = $('#number-select').val();
         var fullScheme = footScheme + numberScheme;
 
-        if (correctAnswer === fullScheme) {
+        var dolnik = (footScheme == '+++' || footScheme == '++++');
+        if (correctAnswer === fullScheme || (dolnik && footScheme == footType)) {
             $('#checkmeter' + lineNumber + " img").attr("src", correctAnswerUrl);
             meterCorrect = true;
         } else {
@@ -462,6 +463,21 @@ $(document).ready(function() {
 
     // Dialog box for the meter
     $('#meter-select').dialog({ autoOpen: false });
+
+    // Hide foot count selection in dolniks
+    $('#foot-select').on('change', function(event) {
+        var meter = event.target.value;
+
+        if(meter == '+++' || meter == '++++') {
+            $('#meter-select label[for^=number-select]').hide();
+            $('#number-select').hide()
+                [0].disabled = true;
+        } else {
+            $('#meter-select label[for^=number-select]').show();
+            $('#number-select').show()
+                [0].disabled = false;
+        }
+    });
 
     /* Populate the line state array with base correction states */
     $('.prosody-line').each(function(index) {
