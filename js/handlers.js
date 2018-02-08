@@ -14,6 +14,9 @@ var STRESS_WIDTH = 1;
 /* This is the array that will hold the correction state of line features */
 var lineStates = [];
 
+// Test flag to enable correction for unplaced marks
+var FULL_CORRECTION = false;
+
 var setLineFeatureState = function(lineNumber, feature, state) {
     if (lineStates && lineStates[lineNumber - 1]) {
         lineStates[lineNumber - 1][feature] = state;
@@ -196,7 +199,7 @@ function correctStress(lineNumber, response, correct) {
                     .removeClass('prosody-correct');
             }
         } else {
-            if(correct.charAt(idx) == '+') {
+            if(FULL_CORRECTION && correct.charAt(idx) == '+') {
                 switchstress(shadowLine[idx]);
             }
         }
@@ -228,7 +231,7 @@ function correctFeet(lineNumber, response, correct) {
             }
             
             if(searchIdx == -1) break;
-            else if(target.length == 0 && $(reals[realIdx]).children().length == 0) {
+            else if(FULL_CORRECTION && target.length == 0 && $(reals[realIdx]).children().length == 0) {
                 switchfoot(reals[realIdx].id);
             }
         }
