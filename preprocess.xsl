@@ -97,31 +97,33 @@
                 <xsl:copy-of select="@*"/>
                 <xsl:for-each select="TEI:seg">
 
-                    <xsl:variable name="single-foot" select="boolean(@single-foot)"/>
                     <xsl:variable name="seg-position" select="position()"/>
 
-                    <xsl:for-each select="TEI:single|text()|TEI:caesura">
-                    	<xsl:if test="name(.)='caesura'">
-                        	<span class="caesura" style="display:none">//</span>
+                    <xsl:for-each select="text()|*">
+                        <xsl:if test="name(.)='caesura'">
+                            <span class="caesura" style="display:none">//</span>
                         </xsl:if>
                         <xsl:variable name="foot-position" select="position()"/>
                         <xsl:variable name="foot-last" select="last()"/>
                         <xsl:variable name="node-string" select="."/>
                         <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
                         <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
+                        <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
 
                         <xsl:choose>
-                            <xsl:when test="name() = 'single'">
-                                <xsl:call-template name="shadow-segment">
-                                    <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
-                                </xsl:call-template>
-                            </xsl:when>
-                            <xsl:otherwise>
+                            <xsl:when test="name() = ''">
                                 <xsl:for-each select="str:tokenize(.,' ')">
-                                    <xsl:call-template name="shadow-segment">
-                                        <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+                                    <xsl:call-template name="shadow-foot">
+                                        <xsl:with-param name="seg-id" select="$seg-id" />
+                                        <xsl:with-param name="last-char" select="$last-char" />
                                     </xsl:call-template>
                                 </xsl:for-each>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:apply-templates select="." mode="shadow">
+                                    <xsl:with-param name="seg-id" select="$seg-id" />
+                                    <xsl:with-param name="last-char" select="$last-char" />
+                                </xsl:apply-templates>
                             </xsl:otherwise>
                         </xsl:choose>
 
@@ -165,7 +167,7 @@
                 segment ends with a space -->
 
                 <xsl:variable name="seg-position" select="position()"/>
-                <xsl:for-each select="TEI:single|text()|TEI:caesura">
+                <xsl:for-each select="text()|*">
                     <xsl:if test="name(.)='caesura'">
                         <span class="caesura" style="display:none">//</span>
                     </xsl:if>
@@ -174,23 +176,24 @@
                     <xsl:variable name="node-string" select="."/>
                     <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
                     <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
+                    <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
 
                     <xsl:choose>
-                        <xsl:when test="name() = 'single'">
-                            <xsl:call-template name="real-segment">
-                                <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
-                                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
-                                <xsl:with-param name="last-char" select="$last-char" />
-                            </xsl:call-template>
-                        </xsl:when>
-                        <xsl:otherwise>
+                        <xsl:when test="name() = ''">
                             <xsl:for-each select="str:tokenize(.,' ')">
-                                <xsl:call-template name="real-segment">
-                                    <xsl:with-param name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+                                <xsl:call-template name="real-foot">
+                                    <xsl:with-param name="seg-id" select="$seg-id" />
                                     <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                     <xsl:with-param name="last-char" select="$last-char" />
                                 </xsl:call-template>
                             </xsl:for-each>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="." mode="real">
+                                <xsl:with-param name="seg-id" select="$seg-id" />
+                                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                                <xsl:with-param name="last-char" select="$last-char" />
+                            </xsl:apply-templates>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
@@ -236,6 +239,41 @@
     </xsl:template>
 
     <xsl:template name="shadow-segment">
+        <xsl:param name="line-number"/>
+        <xsl:param name="seg-position" />
+
+
+    </xsl:template>
+
+    <xsl:template match="TEI:single" mode="shadow">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <xsl:call-template name="shadow-foot">
+            <xsl:with-param name="seg-id" select="$seg-id" />
+            <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+            <xsl:with-param name="last-char" select="$last-char" />
+        </xsl:call-template>
+
+        <xsl:text> </xsl:text> <!-- todo: properly detect space case instead of hardcoding -->
+    </xsl:template>
+
+    <xsl:template match="TEI:rhyme" mode="shadow">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <xsl:for-each select="str:tokenize(.,' ')">
+            <xsl:call-template name="shadow-foot">
+                <xsl:with-param name="seg-id" select="$seg-id" />
+                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                <xsl:with-param name="last-char" select="$last-char" />
+            </xsl:call-template>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="shadow-foot">
         <xsl:param name="seg-id" />
 
         <xsl:if test="string(.)">
@@ -253,10 +291,37 @@
         </xsl:if>
     </xsl:template>
 
-    <xsl:template name="real-segment">
+    <xsl:template match="TEI:single" mode="real">
         <xsl:param name="seg-id" />
         <xsl:param name="discrepant-flag" />
-        <xsl:param name="single-foot" />
+        <xsl:param name="last-char" />
+
+        <xsl:call-template name="real-foot">
+            <xsl:with-param name="seg-id" select="$seg-id" />
+            <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+            <xsl:with-param name="last-char" select="$last-char" />
+        </xsl:call-template>
+
+        <xsl:text> </xsl:text> <!-- todo: properly detect space case instead of hardcoding -->
+    </xsl:template>
+
+    <xsl:template match="TEI:rhyme" mode="real">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <xsl:for-each select="str:tokenize(.,' ')">
+            <xsl:call-template name="real-foot">
+                <xsl:with-param name="seg-id" select="$seg-id" />
+                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                <xsl:with-param name="last-char" select="$last-char" />
+            </xsl:call-template>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template name="real-foot">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
         <xsl:param name="last-char" />
 
         <xsl:if test="string(.)">
@@ -271,19 +336,17 @@
                 <xsl:copy-of select="text()"/>
                 <!-- add space back -->
 
-                <xsl:if test="not($single-foot)">
-                    <xsl:choose>
-                        <xsl:when test="not(position()=last()) and $last-char=' '">
-                        <xsl:text> </xsl:text>
-                        </xsl:when>
-                        <xsl:when test="not(position()=last())">
-                        <xsl:text> </xsl:text>
-                        </xsl:when>
-                        <xsl:when test="$last-char=' '">
-                        <xsl:text> </xsl:text>
-                        </xsl:when>
-                    </xsl:choose>
-                </xsl:if>
+                <xsl:choose>
+                    <xsl:when test="not(position()=last()) and $last-char=' '">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                    <xsl:when test="not(position()=last())">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                    <xsl:when test="$last-char=' '">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                </xsl:choose>
             </span>
         </xsl:if>
     </xsl:template>
