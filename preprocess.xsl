@@ -194,6 +194,17 @@
                                 <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                 <xsl:with-param name="last-char" select="$last-char" />
                             </xsl:apply-templates>
+                            <xsl:choose>
+                                <xsl:when test="not(position()=last()) and $last-char=' '">
+                                <xsl:text> </xsl:text>
+                                </xsl:when>
+                                <xsl:when test="not(position()=last())">
+                                <xsl:text> </xsl:text>
+                                </xsl:when>
+                                <xsl:when test="$last-char=' '">
+                                <xsl:text> </xsl:text>
+                                </xsl:when>
+                            </xsl:choose>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
@@ -238,13 +249,6 @@
         </div>
     </xsl:template>
 
-    <xsl:template name="shadow-segment">
-        <xsl:param name="line-number"/>
-        <xsl:param name="seg-position" />
-
-
-    </xsl:template>
-
     <xsl:template match="TEI:single" mode="shadow">
         <xsl:param name="seg-id" />
         <xsl:param name="discrepant-flag" />
@@ -260,6 +264,20 @@
     </xsl:template>
 
     <xsl:template match="TEI:rhyme" mode="shadow">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <xsl:for-each select="str:tokenize(.,' ')">
+            <xsl:call-template name="shadow-foot">
+                <xsl:with-param name="seg-id" select="$seg-id" />
+                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                <xsl:with-param name="last-char" select="$last-char" />
+            </xsl:call-template>
+        </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="TEI:emph" mode="shadow">
         <xsl:param name="seg-id" />
         <xsl:param name="discrepant-flag" />
         <xsl:param name="last-char" />
@@ -301,8 +319,6 @@
             <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
             <xsl:with-param name="last-char" select="$last-char" />
         </xsl:call-template>
-
-        <xsl:text> </xsl:text> <!-- todo: properly detect space case instead of hardcoding -->
     </xsl:template>
 
     <xsl:template match="TEI:rhyme" mode="real">
@@ -317,6 +333,22 @@
                 <xsl:with-param name="last-char" select="$last-char" />
             </xsl:call-template>
         </xsl:for-each>
+    </xsl:template>
+
+    <xsl:template match="TEI:emph" mode="real">
+        <xsl:param name="seg-id" />
+        <xsl:param name="discrepant-flag" />
+        <xsl:param name="last-char" />
+
+        <i>
+            <xsl:for-each select="str:tokenize(.,' ')">
+                <xsl:call-template name="real-foot">
+                    <xsl:with-param name="seg-id" select="$seg-id" />
+                    <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                    <xsl:with-param name="last-char" select="$last-char" />
+                </xsl:call-template>
+            </xsl:for-each>
+        </i>
     </xsl:template>
 
     <xsl:template name="real-foot">
