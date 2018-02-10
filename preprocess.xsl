@@ -194,17 +194,6 @@
                                 <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
                                 <xsl:with-param name="last-char" select="$last-char" />
                             </xsl:apply-templates>
-                            <xsl:choose>
-                                <xsl:when test="not(position()=last()) and $last-char=' '">
-                                <xsl:text> </xsl:text>
-                                </xsl:when>
-                                <xsl:when test="not(position()=last())">
-                                <xsl:text> </xsl:text>
-                                </xsl:when>
-                                <xsl:when test="$last-char=' '">
-                                <xsl:text> </xsl:text>
-                                </xsl:when>
-                            </xsl:choose>
                         </xsl:otherwise>
                     </xsl:choose>
                 </xsl:for-each>
@@ -348,6 +337,7 @@
                     <xsl:with-param name="last-char" select="$last-char" />
                 </xsl:call-template>
             </xsl:for-each>
+            <xsl:text> </xsl:text> <!-- todo: properly detect space case -->
         </i>
     </xsl:template>
 
@@ -367,19 +357,16 @@
 
                 <xsl:copy-of select="text()"/>
                 <!-- add space back -->
-
-                <xsl:choose>
-                    <xsl:when test="not(position()=last()) and $last-char=' '">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                    <xsl:when test="not(position()=last())">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                    <xsl:when test="$last-char=' '">
-                    <xsl:text> </xsl:text>
-                    </xsl:when>
-                </xsl:choose>
             </span>
         </xsl:if>
+
+        <xsl:choose>
+            <xsl:when test="not(position()=last())">
+            <xsl:text> </xsl:text>
+            </xsl:when>
+            <xsl:when test="$last-char=' '">
+            <xsl:text> </xsl:text>
+            </xsl:when>
+        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
