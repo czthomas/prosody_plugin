@@ -25,7 +25,8 @@ function prosody_create_post_type ()
             'public' => true,
             'has_archive' => true,
             'taxonomies' => array('category'),
-            'supports' => array('title', 'editor', 'revisions')
+            'supports' => array('title', 'revisions'),
+            'menu_position' => 4
         )
     );
 }
@@ -75,6 +76,31 @@ function prosody_xml_transform ($post)
     }
 }
 
+// Displays prosody metaboxes with priority
+add_action( 'edit_form_after_title', 'prosody_poem_editor' );
+
+function prosody_poem_editor()
+{
+    global $post;
+
+    if( $post->post_type == 'prosody_poem' ) {
+        do_meta_boxes('prosody_poem', 'prosody', $post);
+    }
+}
+
+// Enqueues prosody editor CSS
+add_action( 'admin_print_styles', 'prosody_editor_styles' );
+
+function prosody_editor_styles()
+{
+    global $post_type;
+
+    if( $post_type == 'prosody_poem' ) {
+        wp_enqueue_style( 'prosody_editor_styles',
+            plugin_dir_url( __FILE__ ) . 'css/editor.css' );
+    }
+}
+
 // Adds meta box for TEI source of poem
 add_action( 'add_meta_boxes', 'prosody_source_poem' );
 
@@ -84,7 +110,9 @@ function prosody_source_poem ()
         'prosody_source_poem',
         __('Original Document:', 'prosody'),
         'prosody_source_poem_meta_box',
-        'prosody_poem'
+        'prosody_poem',
+        'prosody',
+        'low'
     );
 }
 
@@ -108,9 +136,10 @@ function prosody_source_poem_meta_box($post=null)
     echo '<label for="prosody_source_poem">';
     __( 'Original Document:', 'prosody' );
     echo '</label> ';
-    echo '<input type="text" id="prosody_source_poem" '
-    . 'name="prosody_source_poem" value="' . esc_attr( $value ) .
-    '" size="50" />';
+    echo '<textarea id="prosody_source_poem" '
+    . 'name="prosody_source_poem" rows="20">';
+    echo esc_textarea($value);
+    echo '</textarea>';
 }
 
 
@@ -189,7 +218,8 @@ function prosody_poem_author ()
         'prosody_poem_author',
         __('Author (Lastname, Firstname):', 'prosody'),
         'prosody_poem_author_meta_box',
-        'prosody_poem'
+        'prosody_poem',
+        'prosody'
     );
 }
 
@@ -293,7 +323,8 @@ function prosody_poem_difficulty ()
         'prosody_poem_difficulty',
         __('Difficulty:', 'prosody'),
         'prosody_poem_difficulty_meta_box',
-        'prosody_poem'
+        'prosody_poem',
+        'prosody'
     );
 }
 
@@ -399,7 +430,8 @@ function prosody_poem_type ()
         'prosody_poem_type',
         __('Type:', 'prosody'),
         'prosody_poem_type_meta_box',
-        'prosody_poem'
+        'prosody_poem',
+        'prosody'
     );
 }
 
