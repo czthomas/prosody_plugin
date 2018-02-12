@@ -238,6 +238,9 @@
         </div>
     </xsl:template>
 
+    <xsl:template match="TEI:sb">
+    </xsl:template>
+
     <xsl:template match="TEI:single" mode="shadow">
         <xsl:param name="seg-id" />
         <xsl:param name="discrepant-flag" />
