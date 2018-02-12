@@ -360,16 +360,16 @@
 
                 <xsl:copy-of select="text()"/>
                 <!-- add space back -->
+
+                <xsl:choose>
+                    <xsl:when test="not(position()=last())">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                    <xsl:when test="$last-char=' '">
+                    <xsl:text> </xsl:text>
+                    </xsl:when>
+                </xsl:choose>
             </span>
         </xsl:if>
-
-        <xsl:choose>
-            <xsl:when test="not(position()=last())">
-            <xsl:text> </xsl:text>
-            </xsl:when>
-            <xsl:when test="$last-char=' '">
-            <xsl:text> </xsl:text>
-            </xsl:when>
-        </xsl:choose>
     </xsl:template>
 </xsl:stylesheet>
