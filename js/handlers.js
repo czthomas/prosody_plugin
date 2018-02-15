@@ -164,7 +164,7 @@ function checkstress(lineNumber) {
         stressCorrect = false;
     }
 
-    correctStress(lineNumber, scheme, realAnswer);
+    correctStress(lineNumber, scheme, realAnswer, expectedAnswer);
 
     setLineFeatureState(lineNumber, feature, stressCorrect);
     showSyncopation();
@@ -186,17 +186,21 @@ function showNote(lineNumber) {
     }
 }
 
-function correctStress(lineNumber, response, correct) {
+function correctStress(lineNumber, response, correct, expected) {
     var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
 
     for(var idx = 0; idx < response.length; idx++) {
+        $(shadowLine[idx]).removeClass('prosody-correct')
+            .removeClass('prosody-incorrect')
+            .removeClass('prosody-expected');
+
         if(response.charAt(idx) != '-') {
             if(response.charAt(idx) == correct.charAt(idx)) {
-                $(shadowLine[idx]).addClass('prosody-correct')
-                    .removeClass('prosody-incorrect');
+                $(shadowLine[idx]).addClass('prosody-correct');
+            } else if(expected && response.charAt(idx) == expected.charAt(idx)) {
+                $(shadowLine[idx]).addClass('prosody-expected');
             } else {
-                $(shadowLine[idx]).addClass('prosody-incorrect')
-                    .removeClass('prosody-correct');
+                $(shadowLine[idx]).addClass('prosody-incorrect');
             }
         } else {
             if(FULL_CORRECTION && correct.charAt(idx) == '+') {

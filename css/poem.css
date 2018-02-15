@@ -10,7 +10,6 @@ span.prosody-shadowsyllable {
   empty-cells: show;
   text-align: center;
   font-size: 13px;
-  color: #deb887;
   vertical-align: bottom;
   height: 18px;
 }
@@ -23,7 +22,6 @@ span.prosody-marker {
   white-space: pre;
 }
 span.prosody-footmarker {
-  color: #deb887;
   font-weight: bold;
   vertical-align: bottom;
   width: 1ex;
@@ -46,6 +44,9 @@ span.prosody-correct {
 }
 span.prosody-incorrect {
   color: #ff2020;
+}
+span.prosody-expected {
+  color: #f84;
 }
 .caesura {
   color: #a5a;
