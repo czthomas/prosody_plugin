@@ -14,6 +14,17 @@
       </xsl:for-each>
     </xsl:variable>
 
+    <xsl:variable name="text-type">
+        <xsl:choose>
+            <xsl:when test="/TEI:TEI/TEI:text/@type">
+                <xsl:value-of select="/TEI:TEI/TEI:text/@type" />
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:text>poetry</xsl:text>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:variable>
+
     <xsl:template match="/">
 			<xsl:if test="/TEI:TEI/TEI:text/TEI:body/TEI:lg[1]/@rhyme">
         <div id="rhyme" style="display:none;">
@@ -222,18 +233,20 @@
                         <img src="[PLUGIN_DIR]/stress-default.png"/>
                     </button>
                 </span>
-                <span class="button">
-                    <button class="prosody-checkfeet" id="checkfeet{$line-number}" name="Check feet"
-                        onclick="checkfeet({$line-number})" onmouseover="Tip('Check feet', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
-                        <img src="[PLUGIN_DIR]/feet-default.png"/>
-                    </button>
-                </span>
-                <span class="button">
-                    <button class="prosody-meter" id="checkmeter{$line-number}" name="Check meter"
-                        onclick="checkmeter({$line-number},{$linegroupindex})" onmouseover="Tip('Check meter', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
-                        <img src="[PLUGIN_DIR]/meter-default.png"/>
-                    </button>
-                </span>
+                <xsl:if test="$text-type = 'poetry'">
+                    <span class="button">
+                        <button class="prosody-checkfeet" id="checkfeet{$line-number}" name="Check feet"
+                            onclick="checkfeet({$line-number})" onmouseover="Tip('Check feet', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
+                            <img src="[PLUGIN_DIR]/feet-default.png"/>
+                        </button>
+                    </span>
+                    <span class="button">
+                        <button class="prosody-meter" id="checkmeter{$line-number}" name="Check meter"
+                            onclick="checkmeter({$line-number},{$linegroupindex})" onmouseover="Tip('Check meter', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
+                            <img src="[PLUGIN_DIR]/meter-default.png"/>
+                        </button>
+                    </span>
+                </xsl:if>
             </div>
         </div>
     </xsl:template>
@@ -352,8 +365,16 @@
         <xsl:if test="string(.)">
             <span class="prosody-syllable" real=""
                 id="prosody-real-{$seg-id}-{position()}"
-                onclick="switchfoot('prosody-real-{$seg-id}-{position()}');"
                 data-raw="{string(.)}">
+                <xsl:if test="$text-type = 'poetry'">
+                    <xsl:attribute name="onclick">
+                        <xsl:text>switchfoot('prosody-real-</xsl:text>
+                        <xsl:value-of select="$seg-id" />
+                        <xsl:text>-</xsl:text>
+                        <xsl:value-of select="position()" />
+                        <xsl:text>');</xsl:text>
+                    </xsl:attribute>
+                </xsl:if>
                 <xsl:if test="$discrepant-flag">
                     <xsl:attribute name="discrepant"/>
                 </xsl:if>
