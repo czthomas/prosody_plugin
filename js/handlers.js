@@ -415,7 +415,7 @@ $(document).ready(function() {
 
     var titleHeight = $('#poemtitle').height();
     var spacerHeight = titleHeight + 44;
-    $('#rhymespacer').height(spacerHeight + 'px');
+    $('.rhymespacer').height(spacerHeight + 'px');
 
     // Set initial width of shadowsyllables
     setTimeout(function() {

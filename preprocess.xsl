@@ -28,7 +28,7 @@
     <xsl:template match="/">
 			<xsl:if test="/TEI:TEI/TEI:text/TEI:body/TEI:lg[1]/@rhyme">
         <div id="rhyme" style="display:none;">
-            <div id="rhymespacer"><xsl:text> </xsl:text></div>
+            <div class="rhymespacer"><xsl:text> </xsl:text></div>
             <form name="{$scheme}" id="rhymeform" autocomplete="off">
             <xsl:for-each select="/TEI:TEI/TEI:text/TEI:body/TEI:lg">
                 <xsl:variable name="lgPos"><xsl:value-of select="position()"/></xsl:variable>
@@ -43,7 +43,8 @@
             </form>
         </div>
         <div id="rhymebar">
-            <xsl:text> </xsl:text>
+            <div class="rhymespacer"><xsl:text> </xsl:text></div>
+            <div class="rhymefield"><xsl:text> </xsl:text></div>
         </div>
 			</xsl:if>
         <div id="poem">
