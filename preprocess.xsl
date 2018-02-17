@@ -27,25 +27,28 @@
 
     <xsl:template match="/">
 			<xsl:if test="/TEI:TEI/TEI:text/TEI:body/TEI:lg[1]/@rhyme">
-        <div id="rhyme" style="display:none;">
-            <div class="rhymespacer"><xsl:text> </xsl:text></div>
-            <form name="{$scheme}" id="rhymeform" autocomplete="off">
-            <xsl:for-each select="/TEI:TEI/TEI:text/TEI:body/TEI:lg">
-                <xsl:variable name="lgPos"><xsl:value-of select="position()"/></xsl:variable>
-                <p><br/></p>
-                <xsl:for-each select="TEI:l">
-                    <div class="lrhyme">
-                        <input size="1" maxlength="1" value="" name="lrhyme-{$lgPos}-{position()}" type="text" onFocus="this.value='';this.style['color'] = '#44FFFF';"/>
+                <div id="rhymegutter">
+                    <div id="rhyme" style="display:none;">
+                        <div class="rhymespacer"><xsl:text> </xsl:text></div>
+                        <form name="{$scheme}" id="rhymeform" autocomplete="off">
+                        <xsl:for-each select="/TEI:TEI/TEI:text/TEI:body/TEI:lg">
+                            <xsl:variable name="lgPos"><xsl:value-of select="position()"/></xsl:variable>
+                            <p><br/></p>
+                            <xsl:for-each select="TEI:l">
+                                <div class="lrhyme">
+                                    <input size="1" maxlength="1" value="" name="lrhyme-{$lgPos}-{position()}" type="text" onFocus="this.value='';this.style['color'] = '#44FFFF';"/>
+                                </div>
+                            </xsl:for-each>
+                        </xsl:for-each>
+                            <div class="lrhyme check"><input type="submit" value="&#x2713;" size="1" maxlength="1" id="rhymecheck"/></div>
+                        </form>
                     </div>
-                </xsl:for-each>
-            </xsl:for-each>
-                <div class="lrhyme check"><input type="submit" value="&#x2713;" size="1" maxlength="1" id="rhymecheck"/></div>
-            </form>
-        </div>
-        <div id="rhymebar">
-            <div class="rhymespacer"><xsl:text> </xsl:text></div>
-            <div class="rhymefield"><xsl:text> </xsl:text></div>
-        </div>
+                    <div id="rhymebar">
+                        <div class="rhymespacer"><xsl:text> </xsl:text></div>
+                        <div class="rhymefield"><xsl:text> </xsl:text></div>
+                    </div>
+                    <div id="rhymeflag">Rhyme</div>
+                </div>
 			</xsl:if>
         <div id="poem">
             <div id="poemtitle">
@@ -64,9 +67,6 @@
             </div>
             <xsl:apply-templates select="TEI:TEI/TEI:text/TEI:body/*"/>
         </div>
-				<xsl:if test="/TEI:TEI/TEI:text/TEI:body/TEI:lg[1]/@rhyme">
-        	<div id="rhymeflag">Rhyme</div>
-				</xsl:if>
     </xsl:template>
 
     <xsl:template match="TEI:space">
