@@ -448,7 +448,7 @@ $(document).ready(function() {
     $('#rhyme').prev().hide();
 
     // initialize watch events to toggle the rhymebar
-    $('#rhymebar').on('click', function() {
+    $('.rhymefield').on('click', function() {
         $('#rhyme').toggle();
     });
     $('#rhymeflag').on('click', function() {
