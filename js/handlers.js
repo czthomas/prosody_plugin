@@ -211,7 +211,7 @@ function correctStress(lineNumber, response, correct, expected) {
 }
 
 function correctFeet(lineNumber, response, correct) {
-    var reals = $('#prosody-real-' + lineNumber + ' > .prosody-syllable');
+    var reals = $('#prosody-real-' + lineNumber + ' .prosody-syllable');
     var feet = correct.split('|');
 
     // walk syllables down foot-graph to locate and correct footmarkers
