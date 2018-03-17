@@ -4,6 +4,9 @@
 /*jshint browser: true, jquery: true, devel: true */
 /*jshint esversion: 6 */
 // URLS for use throughout file
+
+var $ = jQuery;
+
 var siteUrl = WPURLS.siteurl;
 var correctAnswerUrl = siteUrl + "/wp-content/plugins/prosody_plugin/images/correct.png";
 var incorrectAnswerUrl = siteUrl + "/wp-content/plugins/prosody_plugin/images/incorrect.png";
@@ -402,7 +405,7 @@ if (!String.prototype.endsWith) {
     };
 }
 
-$(document).ready(function() {
+jQuery(document).ready(function($) {
 
     // Set initial stress to an empty string for all real spans
     var realSpans = $('span[real]');

@@ -655,7 +655,7 @@ function prosody_plugin_queue_scripts ()
     wp_register_script(
         'handlers.js',
         plugins_url('js/handlers.js', __FILE__),
-        array(),
+        array('jquery-core', 'jquery-ui-core', 'jquery-ui-accordion', 'jquery-ui-dialog'),
         null,
         true
         );
