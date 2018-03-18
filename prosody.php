@@ -470,19 +470,15 @@ function prosody_poem_type_meta_box($post=null)
     __( 'Type:', 'prosody' );
     echo '</label> ';
     echo '<select name="prosody_poem_type" id="prosody_poem_type">';
-    echo '<option value="ballad" ' . selected( $value, 'ballad', false ) . '>Ballad</option>';
-    echo '<option value="blank_verse" ' . selected( $value, 'blank_verse', false ) . '>Blank Verse</option>';
-    echo '<option value="cinquain" ' . selected( $value, 'cinquain', false ) . '>Cinquain</option>';
-    echo '<option value="couplet" ' . selected( $value, 'couplet', false ) . '>Couplet</option>';
-    echo '<option value="octave" ' . selected( $value, 'octave', false ) . '>Octave</Ode>';
-    echo '<option value="ode" ' . selected( $value, 'ode', false ) . '>Ode</Ode>';
-    echo '<option value="quatrain" ' . selected( $value, 'quatrain', false ) . '>Quatrain</option>';
-    echo '<option value="roundel" ' . selected( $value, 'roundel', false ) . '>Roundel</Ode>';
-    echo '<option value="sixain" ' . selected( $value, 'sixain', false ) . '>Sixain</option>';
-    echo '<option value="song" ' . selected( $value, 'song', false ) . '>Song</option>';
-    echo '<option value="sonnet" ' . selected( $value, 'sonnet', false ) . '>Sonnet</option>';
-    echo '<option value="spenserian_stanza" ' . selected( $value, 'spenserian_stanza', false ) . '>Spenserian Stanza</option>';
-    echo '<option value="tercet" ' . selected( $value, 'tercet', false ) . '>Tercet</option>';
+    echo '<option value="Ode" ' . selected( $value, 'Ode', false ) . '>Ode</option>';
+    echo '<option value="Sonnet" ' . selected( $value, 'Sonnet', false ) . '>Sonnet</option>';
+    echo '<option value="Onegin Stanza" ' . selected( $value, 'Onegin Stanza', false ) . '>Onegin Stanza</option>';
+    echo '<option value="Ballad" ' . selected( $value, 'Ballad', false ) . '>Ballad</option>';
+    echo '<option value="Elegy" ' . selected( $value, 'Elegy', false ) . '>Elegy</option>';
+    echo '<option value="Blank verse (Белый стих)" ' . selected( $value, 'Blank verse (Белый стих)', false ) . '>Blank verse (Белый стих)</option>';
+    echo '<option value="Free verse with rhyme (Вольный стих)" ' . selected( $value, 'Free verse with rhyme (Вольный стих)', false ) . '>Free verse with rhyme (Вольный стих)</option>';
+    echo '<option value="Free verse (Свободный стих)" ' . selected( $value, 'Free verse (Свободный стих)', false ) . '>Free verse (Свободный стих)</option>';
+    echo '<option value="Syllabic verse" ' . selected( $value, 'Syllabic verse', false ) . '>Syllabic verse</option>';
     echo '<option value="none" ' . selected( $value, 'none', false ) . '>None</option>';
     echo '</select>';
 }
