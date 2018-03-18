@@ -54,12 +54,26 @@ function prosody_xml_transform ($post)
         $proc->importStylesheet( $xsl_doc );
         $newdom = $proc->transformToDoc( $xml_doc );
 
+        $text_elms = $xml_doc->getElementsByTagName('text');
+        $tei_type = 'poem';
+
+        if($text_elms->length >= 1) {
+            $text_elm = $text_elms->item(0);
+            if($text_elm->hasAttributes()) {
+                $tei_type_attr = $text_elm->attributes->getNamedItem('type');
+                if($tei_type_attr != NULL) {
+                    $tei_type = $tei_type_attr->value;
+                }
+            }
+        }
+
         $my_post = array(
             'ID' => $post->ID,
             'post_content' => $newdom->saveXML(),
         );
 
         wp_update_post($my_post, true);
+        update_post_meta($post->ID, 'tei_type', $tei_type);
 
         if ( ! wp_is_post_revision( $post->ID ) ) {
 
