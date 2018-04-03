@@ -82,11 +82,22 @@
 		</xsl:template>
 
     <xsl:template match="TEI:lg">
+        <xsl:variable name="l-type">
+            <xsl:value-of select="@type"/>
+        </xsl:variable>
+
+        <xsl:variable name="l-mode">
+            <xsl:choose>
+                <xsl:when test="$l-type = 'Translation'">bare</xsl:when>
+            </xsl:choose>
+        </xsl:variable>
         
         <xsl:apply-templates select="TEI:space" />
         <xsl:for-each select="TEI:l|TEI:lb">
             <xsl:apply-templates select=".">
                 <xsl:with-param name="linegroupindex" select="position()"/>
+                <xsl:with-param name="l-mode" select="$l-mode"/>
+                <xsl:with-param name="l-type" select="$l-type"/>
             </xsl:apply-templates>
         </xsl:for-each>
         <xsl:if test="not(./@rend='nobreak')">
@@ -100,126 +111,138 @@
 
     <xsl:template match="TEI:l">
         <xsl:param name="linegroupindex"/>
+        <xsl:param name="l-mode"/>
+        <xsl:param name="l-type"/>
+
         <xsl:variable name="line-number" select="@n"/>
         <xsl:variable name="indent" select="@rend" />
 
-        <div class="prosody-line {$indent}">
-            <!-- first cycle through the segments, constructing shadow syllables -->
-            <div class="prosody-shadowline" id="prosody-shadow-{$line-number}">
-                <xsl:copy-of select="@*"/>
-                <xsl:for-each select="TEI:seg">
+        <div class="prosody-line {$indent} type-{$l-type}">
+            <xsl:choose>
+                <xsl:when test="$l-mode = 'bare'">
+                    <div id="bare-{$line-number}" class="line-bare">
+                        <xsl:value-of select="."/>
+                    </div>
+                </xsl:when>
+                <xsl:otherwise>
+                    <!-- first cycle through the segments, constructing shadow syllables -->
+                    <div class="prosody-shadowline" id="prosody-shadow-{$line-number}">
+                        <xsl:copy-of select="@*"/>
+                        <xsl:for-each select="TEI:seg">
 
-                    <xsl:variable name="seg-position" select="position()"/>
+                            <xsl:variable name="seg-position" select="position()"/>
 
-                    <xsl:for-each select="text()|*">
-                        <xsl:if test="name(.)='caesura'">
+                            <xsl:for-each select="text()|*">
+                                <xsl:if test="name(.)='caesura'">
+                                    <span class="caesura" style="display:none">//</span>
+                                </xsl:if>
+                                <xsl:variable name="foot-position" select="position()"/>
+                                <xsl:variable name="foot-last" select="last()"/>
+                                <xsl:variable name="node-string" select="."/>
+                                <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
+                                <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
+                                <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+
+                                <xsl:call-template name="shadow-foot-nest">
+                                    <xsl:with-param name="seg-id" select="$seg-id" />
+                                </xsl:call-template>
+
+                                <xsl:if test="$last-char=' '">
+                                    <xsl:text> </xsl:text>
+                                </xsl:if>
+                            </xsl:for-each>
+                            <xsl:if test="name(following-sibling::*[1]) = 'caesura'">
+                                <span class="caesura" style="display:none">//</span>
+                            </xsl:if>
+                        </xsl:for-each>
+                    </div>
+
+                    <div class="TEI-l" id="prosody-real-{$line-number}">
+        <!--                 <xsl:if test="exists(TEI:space)"> -->
+                    <xsl:apply-templates select="TEI:space" />
+        <!--                 </xsl:if> -->
+
+                    <xsl:for-each select="@*">
+                        <xsl:attribute name="data-{name()}"><xsl:value-of select="."/></xsl:attribute>
+                    </xsl:for-each>
+                    <xsl:attribute name="data-feet">
+                        <xsl:for-each select="TEI:seg">
+                            <xsl:if test="position()>1">|</xsl:if>
+                            <xsl:value-of select="."/>
+                        </xsl:for-each>
+                    </xsl:attribute>
+
+                    <span style="display:none;" linegroupindex="{$linegroupindex}" answer="{../@met}"
+                        >Meter</span>
+
+
+                    <xsl:for-each select="TEI:seg">
+                                            <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
+                            highlighted -->
+                    <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
+                    -->
+                        <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
+
+                        <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
+                        segment ends with a space -->
+
+                        <xsl:variable name="seg-position" select="position()"/>
+                        <xsl:for-each select="text()|*">
+                            <xsl:if test="name(.)='caesura'">
+                                <span class="caesura" style="display:none">//</span>
+                            </xsl:if>
+                            <xsl:variable name="foot-position" select="position()"/>
+                            <xsl:variable name="foot-last" select="last()"/>
+                            <xsl:variable name="node-string" select="."/>
+                            <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
+
+                            <xsl:call-template name="real-foot-nest">
+                                <xsl:with-param name="seg-id" select="$seg-id" />
+                                <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
+                            </xsl:call-template>
+                        </xsl:for-each>
+                        <xsl:if test="(name(following-sibling::*[1]) = 'caesura')">
                             <span class="caesura" style="display:none">//</span>
                         </xsl:if>
-                        <xsl:variable name="foot-position" select="position()"/>
-                        <xsl:variable name="foot-last" select="last()"/>
-                        <xsl:variable name="node-string" select="."/>
-                        <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
-                        <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
-                        <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
-
-                        <xsl:call-template name="shadow-foot-nest">
-                            <xsl:with-param name="seg-id" select="$seg-id" />
-                        </xsl:call-template>
-
-                        <xsl:if test="$last-char=' '">
-                            <xsl:text> </xsl:text>
-                        </xsl:if>
                     </xsl:for-each>
-                    <xsl:if test="name(following-sibling::*[1]) = 'caesura'">
-                        <span class="caesura" style="display:none">//</span>
-                    </xsl:if>
-                </xsl:for-each>
-            </div>
 
-            <div class="TEI-l" id="prosody-real-{$line-number}">
-<!--                 <xsl:if test="exists(TEI:space)"> -->
-            <xsl:apply-templates select="TEI:space" />
-<!--                 </xsl:if> -->
-
-            <xsl:for-each select="@*">
-                <xsl:attribute name="data-{name()}"><xsl:value-of select="."/></xsl:attribute>
-            </xsl:for-each>
-            <xsl:attribute name="data-feet">
-                <xsl:for-each select="TEI:seg">
-                    <xsl:if test="position()>1">|</xsl:if>
-                    <xsl:value-of select="."/>
-                </xsl:for-each>
-            </xsl:attribute>
-
-            <span style="display:none;" linegroupindex="{$linegroupindex}" answer="{../@met}"
-                >Meter</span>
-
-
-            <xsl:for-each select="TEI:seg">
-                                    <!-- if the following flag gets set, this indicates that there is a discrepancy in the line which must be later
-                    highlighted -->
-            <!--                     <xsl:variable name="discrepant-flag" select="exists(@real)"/>
-            -->
-                <xsl:variable name="discrepant-flag" select="boolean(@real)"/>
-
-                <!-- if the following flag gets set, this indicates that there is a sb element in the line and the
-                segment ends with a space -->
-
-                <xsl:variable name="seg-position" select="position()"/>
-                <xsl:for-each select="text()|*">
-                    <xsl:if test="name(.)='caesura'">
-                        <span class="caesura" style="display:none">//</span>
-                    </xsl:if>
-                    <xsl:variable name="foot-position" select="position()"/>
-                    <xsl:variable name="foot-last" select="last()"/>
-                    <xsl:variable name="node-string" select="."/>
-                    <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
-
-                    <xsl:call-template name="real-foot-nest">
-                        <xsl:with-param name="seg-id" select="$seg-id" />
-                        <xsl:with-param name="discrepant-flag" select="$discrepant-flag" />
-                    </xsl:call-template>
-                </xsl:for-each>
-                <xsl:if test="(name(following-sibling::*[1]) = 'caesura')">
-                    <span class="caesura" style="display:none">//</span>
-                </xsl:if>
-            </xsl:for-each>
-
-            </div>
-            <div class="buttons">
-                  <xsl:if test="TEI:note">
-                    <span class="button">
-                        <button class="prosody-note-button" id="displaynotebutton{$line-number}"
-                            name="Note about this line" onclick="">
-                            <img src="[PLUGIN_DIR]/note.png"/>
-                        </button>
-                        <p class="prosody-note" id="hintfor{$line-number}">
-                            <span>Note on line <xsl:value-of select="$line-number"/>:</span>
-                            <xsl:value-of select="TEI:note"/>
-                        </p>
-                    </span>
-                </xsl:if>
-                <span class="button">
-                    <button class="prosody-checkstress" id="checkstress{$line-number}"
-                        name="Check stress" onclick="checkstress({$line-number})" onmouseover="Tip('Check stress', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
-                        <img src="[PLUGIN_DIR]/stress-default.png"/>
-                    </button>
-                </span>
-                <xsl:if test="$text-type = 'poetry'">
-                    <span class="button">
-                        <button class="prosody-checkfeet" id="checkfeet{$line-number}" name="Check feet"
-                            onclick="checkfeet({$line-number})" onmouseover="Tip('Check feet', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
-                            <img src="[PLUGIN_DIR]/feet-default.png"/>
-                        </button>
-                    </span>
-                    <span class="button">
-                        <button class="prosody-meter" id="checkmeter{$line-number}" name="Check meter"
-                            onclick="checkmeter({$line-number},{$linegroupindex})" onmouseover="Tip('Check meter', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
-                            <img src="[PLUGIN_DIR]/meter-default.png"/>
-                        </button>
-                    </span>
-                </xsl:if>
-            </div>
+                    </div>
+                    <div class="buttons">
+                        <xsl:if test="TEI:note">
+                            <span class="button">
+                                <button class="prosody-note-button" id="displaynotebutton{$line-number}"
+                                    name="Note about this line" onclick="">
+                                    <img src="[PLUGIN_DIR]/note.png"/>
+                                </button>
+                                <p class="prosody-note" id="hintfor{$line-number}">
+                                    <span>Note on line <xsl:value-of select="$line-number"/>:</span>
+                                    <xsl:value-of select="TEI:note"/>
+                                </p>
+                            </span>
+                        </xsl:if>
+                        <span class="button">
+                            <button class="prosody-checkstress" id="checkstress{$line-number}"
+                                name="Check stress" onclick="checkstress({$line-number})" onmouseover="Tip('Check stress', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
+                                <img src="[PLUGIN_DIR]/stress-default.png"/>
+                            </button>
+                        </span>
+                        <xsl:if test="$text-type = 'poetry'">
+                            <span class="button">
+                                <button class="prosody-checkfeet" id="checkfeet{$line-number}" name="Check feet"
+                                    onclick="checkfeet({$line-number})" onmouseover="Tip('Check feet', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
+                                    <img src="[PLUGIN_DIR]/feet-default.png"/>
+                                </button>
+                            </span>
+                            <span class="button">
+                                <button class="prosody-meter" id="checkmeter{$line-number}" name="Check meter"
+                                    onclick="checkmeter({$line-number},{$linegroupindex})" onmouseover="Tip('Check meter', BGCOLOR, '#676767', BORDERWIDTH, 0, FONTCOLOR, '#FFF')" onmouseout="UnTip()">
+                                    <img src="[PLUGIN_DIR]/meter-default.png"/>
+                                </button>
+                            </span>
+                        </xsl:if>
+                    </div>
+                </xsl:otherwise>
+            </xsl:choose>
         </div>
     </xsl:template>
 
