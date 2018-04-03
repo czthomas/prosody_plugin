@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Plugin Name: Prosody
- * Plugin URI: https://github.com/scholarslab/prosody_plugin
- * Description: Provides functionality for For Better for Verse
+ * Plugin Name: Prosody-RoR
+ * Plugin URI: https://github.com/czthomas/prosody_plugin
+ * Description: Provides functionality for Rhythm of Russian
  * Version: 1.0.0
  * Author: Scholars' Lab, University of Virginia
  * Author URI: http://scholarslab.org
