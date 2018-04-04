@@ -472,11 +472,13 @@ function prosody_poem_type_meta_box($post=null)
     echo '</label> ';
     echo '<select name="prosody_poem_type" id="prosody_poem_type">';
     echo '<option value="" ' . selected( $value, '', false ) . '>None</option>';
+    echo '<option value="ballad" ' . selected( $value, 'ballad', false ) . '>Ballad</option>';
+    echo '<option value="childlit"> ' . selected( $value, 'childlit', false) . ">Children's Literature</option>";
+    echo '<option value="elegy" ' . selected( $value, 'elegy', false ) . '>Elegy</option>';
+    echo '<option value="fairytale" ' . selected( $value, 'fairytale', false) . '>Сказка (Fairy Tale)</option>';
     echo '<option value="ode" ' . selected( $value, 'ode', false ) . '>Ode</option>';
     echo '<option value="sonnet" ' . selected( $value, 'sonnet', false ) . '>Sonnet</option>';
     echo '<option value="onegin_stanza" ' . selected( $value, 'onegin_stanza', false ) . '>Onegin Stanza</option>';
-    echo '<option value="ballad" ' . selected( $value, 'ballad', false ) . '>Ballad</option>';
-    echo '<option value="elegy" ' . selected( $value, 'elegy', false ) . '>Elegy</option>';
     echo '<option value="blank_verse" ' . selected( $value, 'blank_verse', false ) . '>Blank verse (Белый стих)</option>';
     echo '<option value="free_verse_rhyme" ' . selected( $value, 'free_verse_rhyme', false ) . '>Free verse with rhyme (Вольный стих)</option>';
     echo '<option value="free_verse" ' . selected( $value, 'free_verse', false ) . '>Free verse (Свободный стих)</option>';
