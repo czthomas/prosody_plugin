@@ -471,7 +471,7 @@ function prosody_poem_type_meta_box($post=null)
     __( 'Type:', 'prosody' );
     echo '</label> ';
     echo '<select name="prosody_poem_type" id="prosody_poem_type">';
-    echo '<option value="" ' . selected( $value, '', false ) . '>None</option>';
+    echo '<option value="none" ' . selected( $value, 'none', false ) . '>None</option>';
     echo '<option value="ballad" ' . selected( $value, 'ballad', false ) . '>Ballad</option>';
     echo '<option value="childlit" ' . selected( $value, 'childlit', false) . ">Children's Literature</option>";
     echo '<option value="elegy" ' . selected( $value, 'elegy', false ) . '>Elegy</option>';
