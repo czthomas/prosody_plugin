@@ -1,6 +1,6 @@
 {
-  "name": "prosody",
-  "version": "1.1.0",
+  "name": "prosody-plugin-RoR",
+  "version": "1.0.0",
   "description": "WordPress plugin to add prosodyjs functions to a theme",
   "author": "Scholars' Lab",
   "license": "ISC",

@@ -1,3 +1,6 @@
+## prosody-plugin-RoR
+specialized prosody fork for UVA's Rhythm of Russian site
+
 ### Dependencies
 
 - php: Requires XSL to be activated. Information can be found at [the PHP:XSL Manual](http://php.net/manual/en/book.xsl.php)
