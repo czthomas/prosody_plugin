@@ -335,7 +335,7 @@ function prosody_poem_difficulty ()
 {
     add_meta_box(
         'prosody_poem_difficulty',
-        __('Difficulty:', 'prosody'),
+        __('Difficulty/Semester:', 'prosody'),
         'prosody_poem_difficulty_meta_box',
         'prosody_poem',
         'prosody'
@@ -360,12 +360,13 @@ function prosody_poem_difficulty_meta_box($post=null)
     $value = get_post_meta( $post->ID, 'Difficulty', true);
 
     echo '<label for="prosody_poem_difficulty">';
-    __( 'Difficulty:', 'prosody' );
+    __( 'Difficulty/Semester:', 'prosody' );
     echo '</label> ';
     echo '<select name="prosody_poem_difficulty" id="prosody_poem_difficulty">';
-    echo '<option value="1" ' . selected( $value, '1', false ) . '>Beginning</option>';
-    echo '<option value="2" ' . selected( $value, '2', false ) . '>Intermediate</option>';
-    echo '<option value="3" ' . selected( $value, '3', false ) . '>Advanced</option>';
+    echo '<option value="1" ' . selected( $value, '1', false ) . '>1 - Beginning</option>';
+    echo '<option value="2" ' . selected( $value, '2', false ) . '>2 - Intermediate</option>';
+    echo '<option value="3" ' . selected( $value, '3', false ) . '>3 - Advanced</option>';
+    echo '<option value="4" ' . selected( $value, '4', false ) . '>4</option>';
     echo '</select>';
 
 }
@@ -727,4 +728,33 @@ if (class_exists('Seravo_Custom_Bulk_Action')) {
       <?php
   }
   add_action( 'admin_notices', 'bulk_action_dependency_notice' );
+}
+
+add_action ( 'init', 'prosody_ror_add_taxonomies' );
+
+function prosody_ror_add_taxonomies()
+{
+    register_taxonomy(
+        'proverb_topic',
+        'prosody_poem',
+        [
+            'labels' => [
+                'name' => __('Proverb Topics', 'prosody_ror'),
+                'singular_name' => __('Proverb Topic', 'prosody_ror')
+            ]
+        ]
+     );
+    register_taxonomy_for_object_type( 'proverb_topic', 'prosody_poem' );
+
+    register_taxonomy(
+        'learner_topic',
+        'prosody_poem',
+        [
+            'labels' => [
+                'name' => __('Grammar Topics', 'prosody_ror'),
+                'singular_name' => __('Grammar Topic', 'prosody_ror')
+            ]
+        ]
+    );
+    register_taxonomy_for_object_type( 'learner_topic', 'prosody_poem' );
 }
