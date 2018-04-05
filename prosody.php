@@ -739,24 +739,24 @@ function prosody_ror_add_taxonomies()
     register_taxonomy(
         'proverb_topic',
         'prosody_poem',
-        [
-            'labels' => [
+        array(
+            'labels' => array(
                 'name' => __('Proverb Topics', 'prosody_ror'),
                 'singular_name' => __('Proverb Topic', 'prosody_ror')
-            ]
-        ]
+            )
+        )
      );
     register_taxonomy_for_object_type( 'proverb_topic', 'prosody_poem' );
 
     register_taxonomy(
         'learner_topic',
         'prosody_poem',
-        [
-            'labels' => [
+        array(
+            'labels' => array(
                 'name' => __('Grammar Topics', 'prosody_ror'),
                 'singular_name' => __('Grammar Topic', 'prosody_ror')
-            ]
-        ]
+            )
+        )
     );
     register_taxonomy_for_object_type( 'learner_topic', 'prosody_poem' );
 }
