@@ -3,7 +3,7 @@ div.prosody-shadowline {
   height: 18px;
 }
 span:hover {
-  background: #444;
+  background: #888;
 }
 span.prosody-shadowsyllable {
   display: inline-block;
@@ -26,7 +26,8 @@ span.prosody-footmarker {
   font-weight: bold;
   vertical-align: bottom;
   width: 1ex;
-  color: #b0b0b0;
+  background: none;
+  padding: 0 2px 0 2px;
 }
 span.prosody-placeholder {
   visibility: hidden;
@@ -44,6 +45,9 @@ span.caesura:hover {
 span.prosody-stressed {
   color: #000;
   background: #ff0;
+}
+span.prosody-stressed:hover {
+  background: #b0b000;
 }
 span.prosody-correct {
   color: #0080ff;

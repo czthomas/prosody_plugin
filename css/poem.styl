@@ -5,7 +5,7 @@ div
 
 span
     &:hover
-        background #444
+        background #888
     &.prosody-shadowsyllable
         display inline-block
         empty-cells show
@@ -24,7 +24,8 @@ span
         font-weight bold
         vertical-align bottom
         width 1ex
-        color #b0b0b0
+        background none
+        padding 0 2px 0 2px
     &.prosody-placeholder
         visibility hidden
         white-space pre
@@ -38,6 +39,8 @@ span
     &.prosody-stressed
         color black
         background yellow
+    &.prosody-stressed:hover
+        background #B0B000
     &.prosody-correct
         color #0080FF
     &.prosody-incorrect
