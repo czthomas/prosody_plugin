@@ -125,38 +125,6 @@
                     </div>
                 </xsl:when>
                 <xsl:otherwise>
-                    <!-- first cycle through the segments, constructing shadow syllables -->
-                    <div class="prosody-shadowline" id="prosody-shadow-{$line-number}">
-                        <xsl:copy-of select="@*"/>
-                        <xsl:for-each select="TEI:seg">
-
-                            <xsl:variable name="seg-position" select="position()"/>
-
-                            <xsl:for-each select="text()|*">
-                                <xsl:if test="name(.)='caesura'">
-                                    <span class="caesura" style="display:none">//</span>
-                                </xsl:if>
-                                <xsl:variable name="foot-position" select="position()"/>
-                                <xsl:variable name="foot-last" select="last()"/>
-                                <xsl:variable name="node-string" select="."/>
-                                <xsl:variable name="last-char-pos" select="string-length($node-string)"/>
-                                <xsl:variable name="last-char" select="substring($node-string, $last-char-pos)"/>
-                                <xsl:variable name="seg-id" select="concat($line-number, '-', $seg-position, '-', $foot-position)" />
-
-                                <xsl:call-template name="shadow-foot-nest">
-                                    <xsl:with-param name="seg-id" select="$seg-id" />
-                                </xsl:call-template>
-
-                                <xsl:if test="$last-char=' '">
-                                    <xsl:text> </xsl:text>
-                                </xsl:if>
-                            </xsl:for-each>
-                            <xsl:if test="name(following-sibling::*[1]) = 'caesura'">
-                                <span class="caesura" style="display:none">//</span>
-                            </xsl:if>
-                        </xsl:for-each>
-                    </div>
-
                     <div class="TEI-l" id="prosody-real-{$line-number}">
         <!--                 <xsl:if test="exists(TEI:space)"> -->
                     <xsl:apply-templates select="TEI:space" />
