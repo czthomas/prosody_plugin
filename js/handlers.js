@@ -89,36 +89,21 @@ function checkmeter(lineNumber, lineGroupIndex) {
     $('#meter-select').dialog("open");
 }
 
-function switchstress(shadowSyllable) {
-    var realSyllable = $('#prosody-real-' + shadowSyllable.id.substring(15));
-    var stress = realSyllable.attr('data-stress');
+function switchstress(syllableId) {
+    var syllable = $('#' + syllableId);
+    var stress = syllable.attr('data-stress');
+
+    syllable.removeClass('prosody-correct')
+        .removeClass('prosody-incorrect');
 
     if (stress === '-' || stress === '') {
-        $('#' + shadowSyllable.id).fadeIn();
-        $('#' + shadowSyllable.id).empty();
-        $('#' + shadowSyllable.id).append(marker(realSyllable));
-        realSyllable.attr('data-stress', '+');
+        syllable.attr('data-stress', '+');
+        syllable.addClass('prosody-stressed');
     } else {
-        $('#' + shadowSyllable.id).fadeOut();
-        setTimeout(function() {
-            $('#' + shadowSyllable.id).empty();
-            $('#' + shadowSyllable.id).append(placeholder(realSyllable));
-            realSyllable.attr('data-stress', '-');
-        }, 150);
-        $('#' + shadowSyllable.id).fadeIn();
+        syllable.attr('data-stress', '-');
+        syllable[0].style.backgroundColor = '';
+        syllable.removeClass('prosody-stressed');
     }
-
-    var digits = /\d+/;
-    var sub = digits.exec(shadowSyllable.id);
-    var shadowLineNumber = '';
-    if (sub !== null) {
-        shadowLineNumber = sub[0];
-    }
-
-    $('#checkstress' + shadowLineNumber + ' img').attr('src', siteUrl + '/wp-content/plugins/prosody_plugin/images/stress-default.png');
-
-    $(shadowSyllable).removeClass('prosody-correct')
-        .removeClass('prosody-incorrect');
 }
 
 function checkstress(lineNumber) {
@@ -190,24 +175,24 @@ function showNote(lineNumber) {
 }
 
 function correctStress(lineNumber, response, correct, expected) {
-    var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
+    var syllables = $('#prosody-real-' + lineNumber + ' > .prosody-syllable');
 
     for(var idx = 0; idx < response.length; idx++) {
-        $(shadowLine[idx]).removeClass('prosody-correct')
+        $(syllables[idx]).removeClass('prosody-correct')
             .removeClass('prosody-incorrect')
             .removeClass('prosody-expected');
 
         if(response.charAt(idx) != '-') {
             if(response.charAt(idx) == correct.charAt(idx)) {
-                $(shadowLine[idx]).addClass('prosody-correct');
+                $(syllables[idx]).addClass('prosody-correct');
             } else if(expected && response.charAt(idx) == expected.charAt(idx)) {
-                $(shadowLine[idx]).addClass('prosody-expected');
+                $(syllables[idx]).addClass('prosody-expected');
             } else {
-                $(shadowLine[idx]).addClass('prosody-incorrect');
+                $(syllables[idx]).addClass('prosody-incorrect');
             }
         } else {
             if(FULL_CORRECTION && correct.charAt(idx) == '+') {
-                switchstress(shadowLine[idx]);
+                switchstress(syllables[idx]);
             }
         }
     }
@@ -261,24 +246,14 @@ function inStressZone(event) {
     var bounds = event.target.getBoundingClientRect();
     var clickRight = bounds.right - event.clientX;
 
-    return clickRight > 5 && clickRight/bounds.width > 0.15
+    return clickRight > 8 && clickRight/bounds.width > 0.15
 }
 
 function switchfoot(event, syllableId) {
     // inline stress toggling
-    if(inStreeZone(event))
+    if(inStressZone(event))
     {
-        var syllable = $('#' + syllableId);
-        var stress = syllable.attr('data-stress');
-
-        if (stress === '-' || stress === '') {
-            syllable.attr('data-stress', '+');
-            syllable.addClass('stressed');
-        } else {
-            syllable.attr('data-stress', '-');
-            syllable[0].style.backgroundColor = '';
-            syllable.removeClass('stressed');
-        }
+        switchstress(syllableId);
         return;
     }
 
