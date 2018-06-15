@@ -401,7 +401,7 @@
                 data-raw="{string(.)}">
                 <xsl:if test="$text-type = 'poetry'">
                     <xsl:attribute name="onclick">
-                        <xsl:text>switchfoot('prosody-real-</xsl:text>
+                        <xsl:text>switchfoot(event, 'prosody-real-</xsl:text>
                         <xsl:value-of select="$seg-id" />
                         <xsl:text>-</xsl:text>
                         <xsl:value-of select="position()" />

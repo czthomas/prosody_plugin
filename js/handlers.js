@@ -257,7 +257,32 @@ function showSyncopation() {
     }
 }
 
-function switchfoot(syllableId) {
+function inStressZone(event) {
+    var bounds = event.target.getBoundingClientRect();
+    var clickRight = bounds.right - event.clientX;
+
+    return clickRight > 5 && clickRight/bounds.width > 0.15
+}
+
+function switchfoot(event, syllableId) {
+    // inline stress toggling
+    if(inStreeZone(event))
+    {
+        var syllable = $('#' + syllableId);
+        var stress = syllable.attr('data-stress');
+
+        if (stress === '-' || stress === '') {
+            syllable.attr('data-stress', '+');
+            syllable.addClass('stressed');
+        } else {
+            syllable.attr('data-stress', '-');
+            syllable[0].style.backgroundColor = '';
+            syllable.removeClass('stressed');
+        }
+        return;
+    }
+
+    // original switchfoot() code
     var syllableSpan = $('#' + syllableId + ' span');
     if (syllableSpan.length === 0) {
         $('#' + syllableId).append('<span class="prosody-footmarker">|</span>');
@@ -406,6 +431,13 @@ if (!String.prototype.endsWith) {
 }
 
 jQuery(document).ready(function($) {
+    $('.prosody-syllable').mousemove(function(event){
+        if(inStressZone(event)) {
+            event.target.style.cursor = 'pointer';
+        } else {
+            event.target.style.cursor = 'text';
+        }
+    });
 
     // Set initial stress to an empty string for all real spans
     var realSpans = $('span[real]');

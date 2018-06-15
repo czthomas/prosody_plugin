@@ -173,3 +173,7 @@ small.date {
 .indent2 {
   padding-left: 2em;
 }
+.stressed {
+  color: #000;
+  background: #ff0;
+}
