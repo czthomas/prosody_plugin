@@ -11,6 +11,15 @@
  * Copyright: 2015 Rector and Board of Visitors, University of Virginia
  */
 
+register_deactivation_hook(__FILE__, 'flush_rewrite_rules');
+register_activation_hook(__FILE__, 'prosody_rewrite');
+
+function prosody_rewrite()
+{
+    prosody_create_post_type();
+    flush_rewrite_rules();
+}
+
 //  Create custom post type for poems
 add_action( 'init', 'prosody_create_post_type' );
 
@@ -26,7 +35,8 @@ function prosody_create_post_type ()
             'has_archive' => true,
             'taxonomies' => array('category'),
             'supports' => array('title', 'revisions'),
-            'menu_position' => 4
+            'menu_position' => 4,
+            'rewrite' => array( 'slug' => 'i' )
         )
     );
 }
