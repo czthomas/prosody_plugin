@@ -192,6 +192,11 @@
                 <span class='prosody-shadowsyllable'
                     id='prosody-shadow-{$foot-id}'
                     onclick='switchstress(this);'>
+                    <xsl:if test="$stress">
+                        <xsl:attribute name="data-stress">
+                            <xsl:value-of select="$stress" />
+                        </xsl:attribute>
+                    </xsl:if>
                     <xsl:text> </xsl:text>
                 </span>
             </xsl:when>
@@ -322,11 +327,19 @@
         <xsl:param name="final" />
         <xsl:param name="shadow" />
 
+        <xsl:variable name="stress">
+            <xsl:choose>
+                <xsl:when test="@c">c<xsl:value-of select="@c"/></xsl:when>
+                <xsl:when test="@o">o<xsl:value-of select="@o"/></xsl:when>
+                <xsl:otherwise>o50</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+
         <xsl:choose>
             <xsl:when test="$shadow">
                <xsl:call-template name="parse-line">
                     <xsl:with-param name="base" select="concat($addr,'-')" />
-                    <xsl:with-param name="stress" select="'true'" />
+                    <xsl:with-param name="stress" select="$stress" />
                     <xsl:with-param name="suffix">
                         <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
                     </xsl:with-param>
@@ -336,7 +349,7 @@
             <xsl:otherwise>
                <xsl:call-template name="parse-line">
                     <xsl:with-param name="base" select="concat($addr,'-')" />
-                    <xsl:with-param name="stress" select="'true'" />
+                    <xsl:with-param name="stress" select="$stress" />
                     <xsl:with-param name="suffix">
                         <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
                     </xsl:with-param>

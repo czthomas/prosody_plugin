@@ -56,6 +56,14 @@ span.prosody-incorrect {
 span.prosody-expected {
   color: #ffb060;
 }
+span.stress-spacer {
+  float: left;
+  white-space: pre;
+}
+span.rhythm-marker {
+  float: left;
+  white-space: pre;
+}
 .caesura {
   color: #a5a;
   font-weight: bold;

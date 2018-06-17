@@ -17,7 +17,7 @@ var STRESS_WIDTH = 1;
 /* This is the array that will hold the correction state of line features */
 var lineStates = [];
 
-var docSource = '';
+var docSource = 'prosody';
 var docStyle = 'poetry';
 
 // Test flag to enable correction for unplaced marks
@@ -98,13 +98,13 @@ function switchstress(shadowSyllable) {
 
     if (stress === '-' || !stress) {
         $('#' + shadowSyllable.id).fadeIn();
-        $('#' + shadowSyllable.id).empty();
+        $('#' + shadowSyllable.id).children(':not(.stress-spacer)').remove();
         $('#' + shadowSyllable.id).append(marker(realSyllable));
         realSyllable.attr('data-stress', '+');
     } else {
         $('#' + shadowSyllable.id).fadeOut();
         setTimeout(function() {
-            $('#' + shadowSyllable.id).empty();
+            $('#' + shadowSyllable.id).children(':not(.stress-spacer)').remove();
             $('#' + shadowSyllable.id).append(placeholder(realSyllable));
             realSyllable.attr('data-stress', '-');
         }, 150);
@@ -393,7 +393,7 @@ function toggledifferences(node) {
 
 function addMarker(real, symbol) {
     var prosodyMarker = document.createElement("span");
-    prosodyMarker.className = "prosody-marker";
+    prosodyMarker.className = docSource + "-marker";
 
     prosodyMarker.textContent = symbol;
     return prosodyMarker;
@@ -458,6 +458,29 @@ jQuery(document).ready(function($) {
             var correspondingRealSyllable = $('#prosody-real-' + shadowSyllables[i].id.substring(15));
             var correspondingRealSyllableWidth = correspondingRealSyllable.innerWidth();
             shadowSyllables[i].style.width = correspondingRealSyllableWidth + 'px';
+
+            var target = shadowSyllables[i].dataset.stress;
+            if(target) {
+                var arg = target.substr(1);
+
+                var spacer = document.createElement('span');
+                spacer.className = 'stress-spacer';
+                spacer.textContent = ' ';
+                switch(target[0]) {
+                    case 'c':
+                        var contents = correspondingRealSyllable[0].textContent;
+                        var idx = correspondingRealSyllable[0].textContent.search(arg);
+                        
+                        correspondingRealSyllable[0].textContent = contents.substr(0, idx);
+                        spacer.style.width = correspondingRealSyllable.innerWidth() + 'px';
+                        correspondingRealSyllable[0].textContent = contents;
+                    break;
+                    case 'o':
+                        spacer.style.width = correspondingRealSyllableWidth * (parseInt(arg)/100) + 'px';
+                    break;
+                }
+                shadowSyllables[i].appendChild(spacer);
+            }
         });
     }, 500);
 
