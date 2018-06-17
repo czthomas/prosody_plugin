@@ -45,6 +45,12 @@
         <xsl:variable name="line-number" select="position()" />
 
         <div class='prosody-line'>
+            <div id='prosody-shadow-{$line-number}'>
+                <xsl:call-template name="parse-line">
+                    <xsl:with-param name="shadow" select="'true'" />
+                </xsl:call-template>
+            </div>
+
             <div id='prosody-real-{$line-number}'>
                 <xsl:call-template name="parse-line" />
             </div>
@@ -79,6 +85,7 @@
         <xsl:param name="suffix" />
         <xsl:param name="terminate" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
         <xsl:param name="addr" select="concat($base, position())" />
 
@@ -99,6 +106,7 @@
                         <xsl:with-param name="suffix" select="$line-suffix" />
                         <xsl:with-param name="terminate" select="$terminate" />
                         <xsl:with-param name="stress" select="$stress" />
+                        <xsl:with-param name="shadow" select="$shadow" />
                     </xsl:call-template>
                 </xsl:when>
 
@@ -107,6 +115,7 @@
                         <xsl:with-param name="addr" select="$nextaddr" />
                         <xsl:with-param name="final" select="position() = last()" />
                         <xsl:with-param name="stress" select="$stress" />
+                        <xsl:with-param name="shadow" select="$shadow" />
                     </xsl:apply-templates>
                 </xsl:otherwise>
 
@@ -119,6 +128,7 @@
         <xsl:param name="suffix" />
         <xsl:param name="terminate" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
         <xsl:variable name="feet-suffix">
             <xsl:choose>
@@ -137,6 +147,7 @@
                     <xsl:with-param name="addr" select="$addr" />
                     <xsl:with-param name="suffix" select="$feet-suffix" />
                     <xsl:with-param name="stress" select="$stress" />
+                    <xsl:with-param name="shadow" select="$shadow" />
                 </xsl:call-template>
             </xsl:when>
             <xsl:otherwise>
@@ -145,6 +156,7 @@
                         <xsl:with-param name="addr" select="$addr" />
                         <xsl:with-param name="suffix" select="$feet-suffix" />
                         <xsl:with-param name="stress" select="$stress" />
+                        <xsl:with-param name="shadow" select="$shadow" />
                     </xsl:call-template>
                 </xsl:for-each>
             </xsl:otherwise>
@@ -155,30 +167,40 @@
         <xsl:param name="addr" />
         <xsl:param name="suffix" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
-        <xsl:variable name="foot-id"
-            select="concat('prosody-real-', $addr, '-', position())" />
+        <xsl:variable name="foot-id" select="concat($addr, '-', position())" />
 
-        <span class='prosody-syllable'
-                id='{$foot-id}'
-                onclick='switchfoot(event, "{$foot-id}")'>
-            <xsl:attribute name='data-real'>
-                <xsl:choose>
-                    <xsl:when test='$stress'>+</xsl:when>
-                    <xsl:otherwise>-</xsl:otherwise>
-                </xsl:choose>
-            </xsl:attribute>
-            <xsl:value-of select="." />
-
-            <xsl:choose>
-                <xsl:when test="position() != last()">
+        <xsl:choose>
+            <xsl:when test="$shadow">
+                <span class='prosody-shadowsyllable'
+                    id='prosody-shadow-{$foot-id}'>
                     <xsl:text> </xsl:text>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:value-of select="$suffix" />
-                </xsl:otherwise>
-            </xsl:choose>
-        </span>
+                </span>
+            </xsl:when>
+            <xsl:otherwise>
+                <span class='prosody-syllable'
+                        id='prosody-real-{$foot-id}'
+                        onclick='switchfoot(event, "{$foot-id}")'>
+                    <xsl:attribute name='data-real'>
+                        <xsl:choose>
+                            <xsl:when test='$stress'>+</xsl:when>
+                            <xsl:otherwise>-</xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
+                    <xsl:value-of select="." />
+
+                    <xsl:choose>
+                        <xsl:when test="position() != last()">
+                            <xsl:text> </xsl:text>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="$suffix" />
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </span>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="rhythm:lb" mode='parsing'>
@@ -189,63 +211,126 @@
         <xsl:param name="addr" />
         <xsl:param name="final" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
-        <i>
-            <xsl:call-template name="parse-line">
-                <xsl:with-param name="base" select="concat($addr,'-')" />
-                <xsl:with-param name="stress" select="$stress" />
-                <xsl:with-param name="suffix">
-                    <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                </xsl:with-param>
-            </xsl:call-template>
-        </i>
+        <xsl:choose>
+            <xsl:when test="$shadow">
+                <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="$stress" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                    <xsl:with-param name="shadow" select="$shadow" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <i>
+                    <xsl:call-template name="parse-line">
+                        <xsl:with-param name="base" select="concat($addr,'-')" />
+                        <xsl:with-param name="stress" select="$stress" />
+                        <xsl:with-param name="suffix">
+                            <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </i>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="rhythm:u"  mode='parsing'>
         <xsl:param name="addr" />
         <xsl:param name="final" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
-        <u>
-            <xsl:call-template name="parse-line">
-                <xsl:with-param name="base" select="concat($addr,'-')" />
-                <xsl:with-param name="stress" select="$stress" />
-                <xsl:with-param name="suffix">
-                    <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                </xsl:with-param>
-            </xsl:call-template>
-        </u>
+        <xsl:choose>
+            <xsl:when test="$shadow">
+                <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="$stress" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                    <xsl:with-param name="shadow" select="$shadow" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <u>
+                    <xsl:call-template name="parse-line">
+                        <xsl:with-param name="base" select="concat($addr,'-')" />
+                        <xsl:with-param name="stress" select="$stress" />
+                        <xsl:with-param name="suffix">
+                            <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                        </xsl:with-param>
+                    </xsl:call-template>
+                </u>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="rhythm:single" mode='parsing'>
         <xsl:param name="addr" />
         <xsl:param name="final" />
         <xsl:param name="stress" />
+        <xsl:param name="shadow" />
 
-        <xsl:call-template name="parse-line">
-            <xsl:with-param name="base" select="concat($addr,'-')" />
-            <xsl:with-param name="stress" select="$stress" />
-            <xsl:with-param name="terminate" select="'true'" />
-            <xsl:with-param name="suffix">
-                <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-            </xsl:with-param>
-        </xsl:call-template>
+        <xsl:choose>
+            <xsl:when test="$shadow">
+                <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="$stress" />
+                    <xsl:with-param name="terminate" select="'true'" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                    <xsl:with-param name="shadow" select="$shadow" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="$stress" />
+                    <xsl:with-param name="terminate" select="'true'" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="rhythm:stress" mode="parsing">
         <xsl:param name="addr" />
         <xsl:param name="final" />
+        <xsl:param name="shadow" />
 
-        <xsl:call-template name="parse-line">
-            <xsl:with-param name="base" select="concat($addr,'-')" />
-            <xsl:with-param name="stress" select="'true'" />
-            <xsl:with-param name="suffix">
-                <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-            </xsl:with-param>
-        </xsl:call-template>
+        <xsl:choose>
+            <xsl:when test="$shadow">
+               <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="'true'" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                    <xsl:with-param name="shadow" select="$shadow" />
+                </xsl:call-template>
+            </xsl:when>
+            <xsl:otherwise>
+               <xsl:call-template name="parse-line">
+                    <xsl:with-param name="base" select="concat($addr,'-')" />
+                    <xsl:with-param name="stress" select="'true'" />
+                    <xsl:with-param name="suffix">
+                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
+                    </xsl:with-param>
+                </xsl:call-template>
+            </xsl:otherwise>
+        </xsl:choose>
     </xsl:template>
 
     <xsl:template match="rhythm:translation" mode="parsing">
+        <xsl:param name="shadow" />
+
         <span class='translation'><xsl:value-of select="."/></span>
     </xsl:template>
 </xsl:stylesheet>
