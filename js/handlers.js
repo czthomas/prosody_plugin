@@ -17,6 +17,9 @@ var STRESS_WIDTH = 1;
 /* This is the array that will hold the correction state of line features */
 var lineStates = [];
 
+var docSource = '';
+var docStyle = 'poetry';
+
 // Test flag to enable correction for unplaced marks
 var FULL_CORRECTION = false;
 
@@ -128,16 +131,24 @@ function checkstress(lineNumber) {
         return;
     }
 
-    var answer = $('#prosody-real-' + lineNumber).data('real').split('|');
-    var realAnswer = answer[0];
-    // Remove the parentheses that some poems have for optional stress marks
-    realAnswer = realAnswer.replace(/\(|\)/g, '');
-    var expectedAnswer;
-    // if answer[1] exists, and answer[1] does not equal answer[0]
-    if (answer[1] && answer[1] !== answer[0]) {
-        expectedAnswer = answer[1];
+    var realAnswer = '', expectedAnswer = '';
+    if(docSource == 'rhythm') {
+        $('#prosody-real-' + lineNumber + ' .prosody-syllable').each(
+            function() {
+                realAnswer += this.dataset.real;
+            }
+        );
+    } else {
+        var answer = $('#prosody-real-' + lineNumber).data('real').split('|');
+        realAnswer = answer[0];
+        // Remove the parentheses that some poems have for optional stress marks
+        realAnswer = realAnswer.replace(/\(|\)/g, '');
+        expectedAnswer;
+        // if answer[1] exists, and answer[1] does not equal answer[0]
+        if (answer[1] && answer[1] !== answer[0]) {
+            expectedAnswer = answer[1];
+        }
     }
-
 
     if (scheme === realAnswer) {
         $("#checkstress" + lineNumber + " img").attr("src", correctAnswerUrl);
@@ -256,6 +267,8 @@ function switchfoot(event, syllableId) {
         switchstress(syllableId);
         return;
     }
+
+    if(docStyle == 'prose') return;
 
     // original switchfoot() code
     var syllableSpan = $('#' + syllableId + ' span');
@@ -406,13 +419,23 @@ if (!String.prototype.endsWith) {
 }
 
 jQuery(document).ready(function($) {
-    $('.prosody-syllable').mousemove(function(event){
-        if(inStressZone(event)) {
-            event.target.style.cursor = 'pointer';
-        } else {
-            event.target.style.cursor = 'text';
-        }
-    });
+    var docType = $('#poem').data('type');
+
+    if(docType != undefined) {
+        var props = docType.split('-');
+        docSource = props[0];
+        docStyle = props[1];
+    }
+
+    if(docStyle != 'prose') {
+        $('.prosody-syllable').mousemove(function(event){
+            if(inStressZone(event)) {
+                event.target.style.cursor = 'pointer';
+            } else {
+                event.target.style.cursor = 'text';
+            }
+        });
+    }
 
     // Set initial stress to an empty string for all real spans
     var realSpans = $('span[real]');
