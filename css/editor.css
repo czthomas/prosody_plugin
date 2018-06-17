@@ -1,6 +1,5 @@
 textarea#prosody_source_poem {
   box-sizing: border-box;
   width: 100%;
-  overflow: scroll;
-  white-space: nowrap;
+  overflow-y: scroll;
 }
