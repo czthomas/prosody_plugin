@@ -174,7 +174,8 @@
         <xsl:choose>
             <xsl:when test="$shadow">
                 <span class='prosody-shadowsyllable'
-                    id='prosody-shadow-{$foot-id}'>
+                    id='prosody-shadow-{$foot-id}'
+                    onclick='switchstress(this);'>
                     <xsl:text> </xsl:text>
                 </span>
             </xsl:when>
