@@ -35,7 +35,23 @@
 
     <xsl:template match="rhythm:translation">
         <div class='translation'>
-            <xsl:value-of select='.'/>
+            <xsl:attribute name="data-type">
+                <xsl:value-of select="@type" />
+            </xsl:attribute>
+            <h2>
+                <xsl:choose>
+                    <xsl:when test="@type = 'literal'">
+                        Literal Translation
+                    </xsl:when>
+                    <xsl:when test="@type = 'approximate'">
+                        Approximate Translation
+                    </xsl:when>
+                    <xsl:otherwise>
+                        Translation
+                    </xsl:otherwise>
+                </xsl:choose>
+            </h2>
+            <p><xsl:value-of select='.'/></p>
         </div>
     </xsl:template>
 
@@ -332,6 +348,13 @@
     <xsl:template match="rhythm:translation" mode="parsing">
         <xsl:param name="shadow" />
 
-        <span class='translation'><xsl:value-of select="."/></span>
+        <xsl:if test="not($shadow)">
+            <span class='translation'>
+                <xsl:attribute name="data-type">
+                    <xsl:value-of select="@type" />
+                </xsl:attribute>
+                <xsl:value-of select="."/>
+            </span>
+        </xsl:if>
     </xsl:template>
 </xsl:stylesheet>

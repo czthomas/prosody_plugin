@@ -2,9 +2,6 @@ div.prosody-shadowline {
   display: table-row;
   height: 18px;
 }
-span:hover {
-  background: #888;
-}
 span.prosody-shadowsyllable {
   display: inline-block;
   empty-cells: show;
