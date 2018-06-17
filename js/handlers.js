@@ -92,21 +92,36 @@ function checkmeter(lineNumber, lineGroupIndex) {
     $('#meter-select').dialog("open");
 }
 
-function switchstress(syllableId) {
-    var syllable = $('#' + syllableId);
-    var stress = syllable.attr('data-stress');
+function switchstress(shadowSyllable) {
+    var realSyllable = $('#prosody-real-' + shadowSyllable.id.substring(15));
+    var stress = realSyllable.attr('data-stress');
 
-    syllable.removeClass('prosody-correct')
-        .removeClass('prosody-incorrect');
-
-    if (stress === '-' || stress === '' || stress == undefined) {
-        syllable.attr('data-stress', '+');
-        syllable.addClass('prosody-stressed');
+    if (stress === '-' || stress === '') {
+        $('#' + shadowSyllable.id).fadeIn();
+        $('#' + shadowSyllable.id).empty();
+        $('#' + shadowSyllable.id).append(marker(realSyllable));
+        realSyllable.attr('data-stress', '+');
     } else {
-        syllable.attr('data-stress', '-');
-        syllable[0].style.backgroundColor = '';
-        syllable.removeClass('prosody-stressed');
+        $('#' + shadowSyllable.id).fadeOut();
+        setTimeout(function() {
+            $('#' + shadowSyllable.id).empty();
+            $('#' + shadowSyllable.id).append(placeholder(realSyllable));
+            realSyllable.attr('data-stress', '-');
+        }, 150);
+        $('#' + shadowSyllable.id).fadeIn();
     }
+
+    var digits = /\d+/;
+    var sub = digits.exec(shadowSyllable.id);
+    var shadowLineNumber = '';
+    if (sub !== null) {
+        shadowLineNumber = sub[0];
+    }
+
+    $('#checkstress' + shadowLineNumber + ' img').attr('src', siteUrl + '/wp-content/plugins/prosody_plugin/images/stress-default.png');
+
+    $(shadowSyllable).removeClass('prosody-correct')
+        .removeClass('prosody-incorrect');
 }
 
 function checkstress(lineNumber) {
@@ -186,24 +201,24 @@ function showNote(lineNumber) {
 }
 
 function correctStress(lineNumber, response, correct, expected) {
-    var syllables = $('#prosody-real-' + lineNumber + ' > .prosody-syllable');
+    var shadowLine = $('#prosody-shadow-' + lineNumber + ' > .prosody-shadowsyllable');
 
     for(var idx = 0; idx < response.length; idx++) {
-        $(syllables[idx]).removeClass('prosody-correct')
+        $(shadowLine[idx]).removeClass('prosody-correct')
             .removeClass('prosody-incorrect')
             .removeClass('prosody-expected');
 
         if(response.charAt(idx) != '-') {
             if(response.charAt(idx) == correct.charAt(idx)) {
-                $(syllables[idx]).addClass('prosody-correct');
+                $(shadowLine[idx]).addClass('prosody-correct');
             } else if(expected && response.charAt(idx) == expected.charAt(idx)) {
-                $(syllables[idx]).addClass('prosody-expected');
+                $(shadowLine[idx]).addClass('prosody-expected');
             } else {
-                $(syllables[idx]).addClass('prosody-incorrect');
+                $(shadowLine[idx]).addClass('prosody-incorrect');
             }
         } else {
             if(FULL_CORRECTION && correct.charAt(idx) == '+') {
-                switchstress(syllables[idx]);
+                switchstress(shadowLine[idx]);
             }
         }
     }
@@ -253,24 +268,7 @@ function showSyncopation() {
     }
 }
 
-function inStressZone(event) {
-    var bounds = event.target.getBoundingClientRect();
-    var clickRight = bounds.right - event.clientX;
-
-    return clickRight > 8 && clickRight/bounds.width > 0.15
-}
-
 function switchfoot(event, syllableId) {
-    // inline stress toggling
-    if(inStressZone(event))
-    {
-        switchstress(syllableId);
-        return;
-    }
-
-    if(docStyle == 'prose') return;
-
-    // original switchfoot() code
     var syllableSpan = $('#' + syllableId + ' span');
     if (syllableSpan.length === 0) {
         $('#' + syllableId).append('<span class="prosody-footmarker">|</span>');
@@ -425,16 +423,6 @@ jQuery(document).ready(function($) {
         var props = docType.split('-');
         docSource = props[0];
         docStyle = props[1];
-    }
-
-    if(docStyle != 'prose') {
-        $('.prosody-syllable').mousemove(function(event){
-            if(inStressZone(event)) {
-                event.target.style.cursor = 'pointer';
-            } else {
-                event.target.style.cursor = 'text';
-            }
-        });
     }
 
     // Set initial stress to an empty string for all real spans
