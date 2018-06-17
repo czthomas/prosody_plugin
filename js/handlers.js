@@ -121,7 +121,12 @@ function switchstress(shadowSyllable) {
     $('#checkstress' + shadowLineNumber + ' img').attr('src', siteUrl + '/wp-content/plugins/prosody_plugin/images/stress-default.png');
 
     $(shadowSyllable).removeClass('prosody-correct')
-        .removeClass('prosody-incorrect');
+        .removeClass('prosody-incorrect')
+        .removeClass('prosody-expected');
+    
+    $(realSyllable).removeClass('prosody-correct')
+        .removeClass('prosody-incorrect')
+        .removeClass('prosody-expected');
 }
 
 function checkstress(lineNumber) {
@@ -208,13 +213,21 @@ function correctStress(lineNumber, response, correct, expected) {
             .removeClass('prosody-incorrect')
             .removeClass('prosody-expected');
 
+        var realSyllable = $('#prosody-real-' + shadowLine[idx].id.substring(15));
+        $(realSyllable).removeClass('prosody-correct')
+            .removeClass('prosody-incorrect')
+            .removeClass('prosody-expected');
+
         if(response.charAt(idx) != '-') {
             if(response.charAt(idx) == correct.charAt(idx)) {
                 $(shadowLine[idx]).addClass('prosody-correct');
+                $(realSyllable).addClass('prosody-correct');
             } else if(expected && response.charAt(idx) == expected.charAt(idx)) {
                 $(shadowLine[idx]).addClass('prosody-expected');
+                $(realSyllable).addClass('prosody-expected');
             } else {
                 $(shadowLine[idx]).addClass('prosody-incorrect');
+                $(realSyllable).addClass('prosody-incorrect');
             }
         } else {
             if(FULL_CORRECTION && correct.charAt(idx) == '+') {
