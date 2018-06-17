@@ -96,7 +96,7 @@ function switchstress(shadowSyllable) {
     var realSyllable = $('#prosody-real-' + shadowSyllable.id.substring(15));
     var stress = realSyllable.attr('data-stress');
 
-    if (stress === '-' || stress === '') {
+    if (stress === '-' || !stress) {
         $('#' + shadowSyllable.id).fadeIn();
         $('#' + shadowSyllable.id).empty();
         $('#' + shadowSyllable.id).append(marker(realSyllable));
