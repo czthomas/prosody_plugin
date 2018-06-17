@@ -192,11 +192,16 @@
                 <span class='prosody-shadowsyllable'
                     id='prosody-shadow-{$foot-id}'
                     onclick='switchstress(this);'>
-                    <xsl:if test="$stress">
-                        <xsl:attribute name="data-stress">
-                            <xsl:value-of select="$stress" />
-                        </xsl:attribute>
-                    </xsl:if>
+                    <xsl:attribute name="data-stress">
+                        <xsl:choose>
+                            <xsl:when test="$stress">
+                                <xsl:value-of select="$stress" />
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <xsl:text>o50</xsl:text>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                    </xsl:attribute>
                     <xsl:text> </xsl:text>
                 </span>
             </xsl:when>
