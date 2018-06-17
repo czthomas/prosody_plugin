@@ -96,7 +96,7 @@ function switchstress(syllableId) {
     syllable.removeClass('prosody-correct')
         .removeClass('prosody-incorrect');
 
-    if (stress === '-' || stress === '') {
+    if (stress === '-' || stress === '' || stress == undefined) {
         syllable.attr('data-stress', '+');
         syllable.addClass('prosody-stressed');
     } else {
@@ -111,7 +111,7 @@ function checkstress(lineNumber) {
     var stressCorrect = getLineFeatureState(lineNumber, feature);
     // Scheme is the user submitted stress marks
     var scheme = '';
-    $('#prosody-real-' + lineNumber + ' span[real]').each(
+    $('#prosody-real-' + lineNumber + ' .prosody-syllable').each(
         function() {
             var syllableStress = this.dataset.stress;
             scheme += syllableStress ? syllableStress : '-';
@@ -119,7 +119,7 @@ function checkstress(lineNumber) {
     );
 
     // Make sure the answer is complete
-    var answerLength = $('#prosody-real-' + lineNumber + ' span[real]').length;
+    var answerLength = $('#prosody-real-' + lineNumber + ' .prosody-syllable').length;
     var schemeLength = scheme.length;
 
     if (answerLength !== schemeLength) {
