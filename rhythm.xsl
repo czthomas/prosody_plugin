@@ -28,7 +28,7 @@
     <xsl:template match="rhythm:title"> </xsl:template>
 
     <xsl:template match="rhythm:author">
-        <h4><xsl:value-of select="." /></h4>
+        <h4 class='author'><xsl:value-of select="." /></h4>
     </xsl:template>
 
     <xsl:template match="rhythm:date"> </xsl:template>
@@ -361,8 +361,22 @@
                 <xsl:attribute name="data-type">
                     <xsl:value-of select="@type" />
                 </xsl:attribute>
-                <xsl:value-of select="."/>
+                <xsl:apply-templates/>
             </span>
         </xsl:if>
+    </xsl:template>
+
+    <!-- passthrough some basic HTML formatting tags -->
+    <xsl:template match="rhythm:u|rhythm:i|rhythm:s|rhythm:b|rhythm:em
+            |rhythm:center|rhythm:tt|rhythm:pre|rhythm:font|rhythm:style
+            |rhythm:blockquote|rhythm:code|rhythm:small|rhythm:strong
+            |rhythm:h1|rhythm:h2|rhythm:h3|rhythm:h4|rhythm:h5|rhythm:h6">
+        <xsl:copy-of select='.' />
+    </xsl:template>
+
+    <xsl:template match="rhythm:emph">
+        <em>
+            <xsl:value-of select="." />
+        </em>
     </xsl:template>
 </xsl:stylesheet>
