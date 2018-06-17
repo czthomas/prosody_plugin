@@ -308,9 +308,6 @@
                     <xsl:with-param name="base" select="concat($addr,'-')" />
                     <xsl:with-param name="stress" select="$stress" />
                     <xsl:with-param name="terminate" select="'true'" />
-                    <xsl:with-param name="suffix">
-                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                    </xsl:with-param>
                     <xsl:with-param name="shadow" select="$shadow" />
                 </xsl:call-template>
             </xsl:when>
@@ -319,9 +316,6 @@
                     <xsl:with-param name="base" select="concat($addr,'-')" />
                     <xsl:with-param name="stress" select="$stress" />
                     <xsl:with-param name="terminate" select="'true'" />
-                    <xsl:with-param name="suffix">
-                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                    </xsl:with-param>
                 </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
@@ -345,9 +339,6 @@
                <xsl:call-template name="parse-line">
                     <xsl:with-param name="base" select="concat($addr,'-')" />
                     <xsl:with-param name="stress" select="$stress" />
-                    <xsl:with-param name="suffix">
-                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                    </xsl:with-param>
                     <xsl:with-param name="shadow" select="$shadow" />
                 </xsl:call-template>
             </xsl:when>
@@ -355,9 +346,6 @@
                <xsl:call-template name="parse-line">
                     <xsl:with-param name="base" select="concat($addr,'-')" />
                     <xsl:with-param name="stress" select="$stress" />
-                    <xsl:with-param name="suffix">
-                        <xsl:if test="not($final)"><xsl:text> </xsl:text></xsl:if>
-                    </xsl:with-param>
                 </xsl:call-template>
             </xsl:otherwise>
         </xsl:choose>
