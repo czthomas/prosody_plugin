@@ -51,12 +51,16 @@ function prosody_xml_transform ($post)
     if ( $post->post_type == 'prosody_poem' ) {
 
         $tei = get_post_meta( $post->ID, 'Original Document', true );
-        $xslt = file_get_contents( plugin_dir_path( __FILE__ ) . 'preprocess.xsl' );
-        $xslt = str_replace('[PLUGIN_DIR]', plugins_url( 'images', __FILE__), $xslt);
 
         $xml_doc = new DOMDocument();
         $xml_doc->loadXML( $tei );
 
+        $xslt_file = 'prosody_tei.xsl';
+        if($xml_doc->documentElement->tagName == 'rhythm')
+            $xslt_file = 'rhythm.xsl';
+
+        $xslt = file_get_contents( plugin_dir_path( __FILE__ ) . $xslt_file );
+        $xslt = str_replace('[PLUGIN_DIR]', plugins_url( 'images', __FILE__), $xslt);
         $xsl_doc = new DOMDocument();
         $xsl_doc->loadXML( $xslt );
 
