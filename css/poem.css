@@ -26,6 +26,7 @@ span.prosody-footmarker {
   font-weight: bold;
   vertical-align: bottom;
   width: 1ex;
+  color: #ccc;
   background: none;
   padding: 0 2px 0 2px;
 }
