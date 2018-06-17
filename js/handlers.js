@@ -282,6 +282,8 @@ function showSyncopation() {
 }
 
 function switchfoot(event, syllableId) {
+    if(docStyle == 'prose') return;
+
     var syllableSpan = $('#' + syllableId + ' span');
     if (syllableSpan.length === 0) {
         $('#' + syllableId).append('<span class="prosody-footmarker">|</span>');
