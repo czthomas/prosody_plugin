@@ -65,10 +65,12 @@
                 <xsl:call-template name="parse-line">
                     <xsl:with-param name="shadow" select="'true'" />
                 </xsl:call-template>
+                <xsl:text> </xsl:text>
             </div>
 
             <div id='prosody-real-{$line-number}'>
                 <xsl:call-template name="parse-line" />
+                <xsl:text> </xsl:text>
             </div>
 
             <div class="buttons">
